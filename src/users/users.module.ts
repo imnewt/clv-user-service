@@ -5,8 +5,8 @@ import {
   RequestMethod,
 } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User as UserEntity } from 'src/typeorm';
 
+import { User as UserEntity } from 'src/typeorm';
 import { ValidateUserMiddleware } from './middlewares/validate-user.middleware';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';

@@ -24,6 +24,12 @@ export class UsersService {
     });
   }
 
+  findUserByUserName(userName: string) {
+    return this.userRepository.findOne({
+      where: { userName },
+    });
+  }
+
   createUser(dto: CreateUserDto) {
     const newUser = this.userRepository.create(dto);
     return this.userRepository.save(newUser);
