@@ -5,7 +5,7 @@ import {
   Get,
   Param,
   Post,
-  UseFilters,
+  // UseFilters,
   UseInterceptors,
   UsePipes,
   ValidationPipe,
@@ -13,7 +13,7 @@ import {
 
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UserNotFoundException } from './exceptions/UserNotFound.exception';
-import { HttpExceptionFilter } from './filters/httpException.filter';
+// import { HttpExceptionFilter } from './filters/httpException.filter';
 import { SerializedUser } from './types/user';
 import { UsersService } from './users.service';
 
@@ -28,10 +28,11 @@ export class UsersController {
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
-  @UseFilters(HttpExceptionFilter)
+  // @UseFilters(HttpExceptionFilter)
   @Get(':id')
-  getUserById(@Param('id') id: string) {
-    const user = this.userService.getUserById(id);
+  async getUserById(@Param('id') id: string) {
+    const data = this.userService.getUserById(id);
+    const user = await data;
     if (user) {
       return new SerializedUser(user);
     } else {
@@ -40,8 +41,9 @@ export class UsersController {
   }
 
   @Post('create')
+  @UseInterceptors(ClassSerializerInterceptor)
   @UsePipes(ValidationPipe)
   createUser(@Body() dto: CreateUserDto) {
-    this.userService.createUser(dto);
+    return this.userService.createUser(dto);
   }
 }
