@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { SocketModule } from './socket/socket.module';
 import entities from './typeorm';
 
 @Module({
@@ -21,6 +22,7 @@ import entities from './typeorm';
       entities,
       synchronize: true,
     }),
+    SocketModule,
   ],
   controllers: [AppController],
   providers: [AppService],

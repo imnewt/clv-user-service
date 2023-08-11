@@ -15,4 +15,10 @@ describe('AuthController', () => {
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
+
+  describe('login', () => {
+    it('should return access token', () => {
+      // Todo:
+    });
+  });
 });
