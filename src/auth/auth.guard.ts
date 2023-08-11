@@ -24,7 +24,7 @@ export class AuthGuard implements CanActivate {
       context.getClass(),
     ]);
     // Disable authentication
-    return true;
+    // return true;
 
     if (isPublic) {
       // 💡 See this condition

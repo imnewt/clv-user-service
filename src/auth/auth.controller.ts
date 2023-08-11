@@ -11,15 +11,15 @@ import {
 import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
 
-@Controller('auth')
+@Controller()
 export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Public()
   @HttpCode(HttpStatus.OK)
-  @Post('login')
-  signIn(@Body() signInDto: Record<string, any>) {
-    return this.authService.login(signInDto.username, signInDto.password);
+  @Post('auth/login')
+  login(@Body() loginDto: Record<string, any>) {
+    return this.authService.login(loginDto.userName, loginDto.password);
   }
 
   @Get('profile')
