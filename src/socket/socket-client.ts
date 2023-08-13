@@ -1,12 +1,14 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Socket, io } from 'socket.io-client';
 
+import { GATEWAY_HOST_URL } from 'src/utils/constants';
+
 @Injectable()
 export class SocketClient implements OnModuleInit {
   public socketClient: Socket;
 
   constructor() {
-    this.socketClient = io('http://localhost:3000');
+    this.socketClient = io(GATEWAY_HOST_URL);
   }
 
   onModuleInit() {
@@ -16,7 +18,7 @@ export class SocketClient implements OnModuleInit {
   private resigterConsumerEvents() {
     // this.socketClient.emit('newMessage', { msg: 'Hi from server' });
     this.socketClient.on('connect', () => {
-      console.log('Connected to Gateway');
+      console.log('User Service - Connected to Gateway');
     });
     this.socketClient.on('onMessage', (payload: any) => {
       console.log('SocketClientClass');
