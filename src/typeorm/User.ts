@@ -1,5 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
+import { AuthMethod } from 'src/users/dtos/create-user.dto';
+
 @Entity()
 export class User {
   @PrimaryGeneratedColumn({
@@ -10,7 +12,6 @@ export class User {
   @Column({
     nullable: false,
     default: '',
-    unique: true,
   })
   userName: string;
 
@@ -26,4 +27,9 @@ export class User {
     default: '',
   })
   password: string;
+
+  @Column({
+    nullable: false,
+  })
+  authMethod: AuthMethod;
 }

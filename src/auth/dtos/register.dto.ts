@@ -1,11 +1,6 @@
 import { IsEmail, IsNotEmpty } from 'class-validator';
 
-export enum AuthMethod {
-  Manual,
-  Google,
-}
-
-export class CreateUserDto {
+export class RegisterDto {
   @IsEmail()
   @IsNotEmpty()
   email: string;
