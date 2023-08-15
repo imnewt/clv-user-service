@@ -39,18 +39,17 @@ export class AuthService {
     if (!existedUser) {
       const { email, firstName, lastName } = req.user;
       const temporaryPassword = generateRandomPassword();
-      const newUser = await this.usersService.createUser(
+      await this.usersService.createUser(
         {
           email,
-          userName: `${firstName} + ${lastName}`,
+          userName: `${firstName} ${lastName}`,
           password: temporaryPassword,
         },
         AuthMethod.Google,
       );
       // Todo: Send this temporary password to user's mail
-      return newUser;
     }
-    throw new BadRequestException('Your email has been used!');
+    return true;
   }
 
   async register(email: string, userName: string, password: string) {

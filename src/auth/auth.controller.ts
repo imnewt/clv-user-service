@@ -8,8 +8,9 @@ import {
   Res,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 
+import { DASHBOARD_URL } from 'src/utils/constants';
 import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
 import { LoginDto } from './dtos/login.dto';
@@ -39,8 +40,8 @@ export class AuthController {
   @Public()
   @Get('login/google/redirect')
   @UseGuards(AuthGuard('google'))
-  googleAuthRedirect(@Req() req: Request, @Res() res: Response) {
-    this.authService.googleLogin(req);
-    return res.redirect('http://localhost:3000/dashboard');
+  async googleAuthRedirect(@Req() req: Request, @Res() res: Response) {
+    const isSuccess = await this.authService.googleLogin(req);
+    if (isSuccess) res.redirect(DASHBOARD_URL);
   }
 }
