@@ -1,9 +1,12 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Client, ClientKafka } from '@nestjs/microservices';
 
+import { microserviceConfig } from 'src/configs/microserviceConfig';
 import { AuthMethod } from 'src/users/dtos/create-user.dto';
 import { UserNotFoundException } from 'src/users/exceptions/UserNotFound.exception';
 import { comparePasswords } from 'src/utils/bcrypt';
+import { SEND_WELCOME_MAIL } from 'src/utils/constants';
 import { generateRandomPassword } from 'src/utils/functions';
 import { UsersService } from '../users/users.service';
 
@@ -13,6 +16,9 @@ export class AuthService {
     @Inject('USER_SERVICE') private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
   ) {}
+
+  @Client(microserviceConfig)
+  client: ClientKafka;
 
   async login(email: string, password: string) {
     const user = await this.usersService.findUserByEmail(email);
@@ -26,20 +32,19 @@ export class AuthService {
     }
 
     const payload = { userName: user.userName, sub: user.id };
-    return {
-      access_token: await this.jwtService.signAsync(payload),
-    };
+    return this.generateToken(payload);
   }
 
   async googleLogin(req) {
     if (!req.user) {
       throw new BadRequestException('Failed validation from Google!');
     }
+    let payload;
     const existedUser = await this.usersService.findUserByEmail(req.user.email);
     if (!existedUser) {
       const { email, firstName, lastName } = req.user;
       const temporaryPassword = generateRandomPassword();
-      await this.usersService.createUser(
+      const newUser = await this.usersService.createUser(
         {
           email,
           userName: `${firstName} ${lastName}`,
@@ -47,9 +52,21 @@ export class AuthService {
         },
         AuthMethod.Google,
       );
-      // Todo: Send this temporary password to user's mail
+      this.client.emit(SEND_WELCOME_MAIL, {
+        email,
+        password: temporaryPassword,
+      });
+      payload = {
+        userName: newUser.userName,
+        sub: newUser.id,
+      };
+    } else {
+      payload = {
+        userName: existedUser.userName,
+        sub: existedUser.id,
+      };
     }
-    return true;
+    return this.generateToken(payload);
   }
 
   async register(email: string, userName: string, password: string) {
@@ -67,4 +84,13 @@ export class AuthService {
     );
     return newUser;
   }
+
+  private generateToken = async (payload: {
+    userName: string;
+    sub: string;
+  }) => {
+    return {
+      access_token: await this.jwtService.signAsync(payload),
+    };
+  };
 }

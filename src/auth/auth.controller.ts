@@ -6,19 +6,32 @@ import {
   UseGuards,
   Req,
   Res,
+  OnModuleInit,
 } from '@nestjs/common';
+import { Client, ClientKafka } from '@nestjs/microservices';
 import { AuthGuard } from '@nestjs/passport';
 import { Request, Response } from 'express';
 
-import { DASHBOARD_URL } from 'src/utils/constants';
+import { microserviceConfig } from 'src/configs/microserviceConfig';
+import { DASHBOARD_URL, SEND_WELCOME_MAIL } from 'src/utils/constants';
 import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
 import { LoginDto } from './dtos/login.dto';
 import { RegisterDto } from './dtos/register.dto';
 
 @Controller('auth')
-export class AuthController {
+export class AuthController implements OnModuleInit {
   constructor(private authService: AuthService) {}
+
+  @Client(microserviceConfig)
+  client: ClientKafka;
+
+  onModuleInit() {
+    const requestPatterns = [SEND_WELCOME_MAIL];
+    requestPatterns.forEach((pattern) => {
+      this.client.subscribeToResponseOf(pattern);
+    });
+  }
 
   @Public()
   @Post('login')
@@ -41,7 +54,9 @@ export class AuthController {
   @Get('login/google/redirect')
   @UseGuards(AuthGuard('google'))
   async googleAuthRedirect(@Req() req: Request, @Res() res: Response) {
-    const isSuccess = await this.authService.googleLogin(req);
-    if (isSuccess) res.redirect(DASHBOARD_URL);
+    const { access_token } = await this.authService.googleLogin(req);
+    if (access_token) {
+      return res.redirect(`${DASHBOARD_URL}?access_token=${access_token}`);
+    }
   }
 }

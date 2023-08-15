@@ -9,6 +9,8 @@ export const KAFKA_BROKER_ADDRESS = 'http://localhost:9092';
 export const KAFKA_CLIENT_ID = 'user-service-app';
 export const KAFKA_GROUP_ID = 'user-service-group';
 
+export const SEND_WELCOME_MAIL = 'send-welcome-mail';
+
 export const jwtConstants = {
   secret:
     'DO NOT USE THIS VALUE. INSTEAD, CREATE A COMPLEX SECRET AND KEEP IT SAFE OUTSIDE OF THE SOURCE CODE.',
