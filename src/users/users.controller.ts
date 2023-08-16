@@ -1,8 +1,10 @@
 import {
   ClassSerializerInterceptor,
   Controller,
+  Delete,
   Get,
   Param,
+  Req,
   // UseFilters,
   UseInterceptors,
 } from '@nestjs/common';
@@ -18,8 +20,14 @@ export class UsersController {
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Get()
-  getUsers() {
+  getUsers(@Req() req) {
+    console.log('req', req);
     return this.userService.getUsers();
+  }
+
+  @Delete(':id')
+  deleteUser(@Param('id') userId) {
+    return this.userService.deleteUser(userId);
   }
 
   @UseInterceptors(ClassSerializerInterceptor)

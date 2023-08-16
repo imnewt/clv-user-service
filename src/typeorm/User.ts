@@ -6,7 +6,6 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-import { AuthMethod } from 'src/users/dtos/create-user.dto';
 import { Role } from './Role';
 import { Base } from './Base';
 
@@ -35,11 +34,6 @@ export class User extends Base {
     default: '',
   })
   password: string;
-
-  @Column({
-    nullable: false,
-  })
-  authMethod: AuthMethod;
 
   @Column({
     nullable: false,

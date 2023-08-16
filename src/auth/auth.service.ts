@@ -3,7 +3,6 @@ import { JwtService } from '@nestjs/jwt';
 import { Client, ClientKafka } from '@nestjs/microservices';
 
 import { microserviceConfig } from 'src/configs/microserviceConfig';
-import { AuthMethod } from 'src/users/dtos/create-user.dto';
 import { UserNotFoundException } from 'src/users/exceptions/UserNotFound.exception';
 import { comparePasswords } from 'src/utils/bcrypt';
 import { SEND_WELCOME_MAIL } from 'src/utils/constants';
@@ -44,14 +43,11 @@ export class AuthService {
     if (!existedUser) {
       const { email, firstName, lastName } = req.user;
       const temporaryPassword = generateRandomPassword();
-      const newUser = await this.usersService.createUser(
-        {
-          email,
-          userName: `${firstName} ${lastName}`,
-          password: temporaryPassword,
-        },
-        AuthMethod.Google,
-      );
+      const newUser = await this.usersService.createUser({
+        email,
+        userName: `${firstName} ${lastName}`,
+        password: temporaryPassword,
+      });
       this.client.emit(SEND_WELCOME_MAIL, {
         email,
         password: temporaryPassword,
@@ -74,14 +70,11 @@ export class AuthService {
     if (user) {
       throw new BadRequestException('Your email has been used!');
     }
-    const newUser = this.usersService.createUser(
-      {
-        email,
-        userName,
-        password,
-      },
-      AuthMethod.Manual,
-    );
+    const newUser = this.usersService.createUser({
+      email,
+      userName,
+      password,
+    });
     return newUser;
   }
 
