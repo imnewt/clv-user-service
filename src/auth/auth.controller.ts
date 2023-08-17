@@ -16,7 +16,11 @@ import { Request, Response } from 'express';
 
 import { microserviceConfig } from 'src/configs/microserviceConfig';
 import { UsersService } from 'src/users/users.service';
-import { DASHBOARD_URL, SEND_WELCOME_MAIL } from 'src/utils/constants';
+import {
+  DASHBOARD_URL,
+  INVALID_REFRESH_TOKEN,
+  SEND_WELCOME_MAIL,
+} from 'src/utils/constants';
 import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
 import { LoginDto } from './dtos/login.dto';
@@ -66,7 +70,7 @@ export class AuthController implements OnModuleInit {
     );
     if (accessToken && refreshToken) {
       return res.redirect(
-        `${DASHBOARD_URL}?access_token=${accessToken}&refresh_token=${refreshToken}`,
+        `${DASHBOARD_URL}?accessToken=${accessToken}&refreshToken=${refreshToken}`,
       );
     }
   }
@@ -75,15 +79,15 @@ export class AuthController implements OnModuleInit {
   @Post('refresh-token')
   async refreshToken(
     @Body() tokenDto: TokenDto,
-  ): Promise<{ accessToken: string }> {
+  ): Promise<{ accessToken: string; refreshToken: string }> {
     const { refreshToken } = tokenDto;
     const payload = await this.authService.verifyRefreshToken(refreshToken);
     if (!payload) {
-      throw new UnauthorizedException('Invalid Refresh Token');
+      throw new UnauthorizedException(INVALID_REFRESH_TOKEN);
     }
     const user = await this.userService.getUserById(payload.sub);
     const accessToken = await this.authService.generateAccessToken(user);
 
-    return { accessToken };
+    return { accessToken, refreshToken };
   }
 }
