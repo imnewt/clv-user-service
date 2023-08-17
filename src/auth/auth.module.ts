@@ -6,8 +6,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { User } from 'src/typeorm';
 import { UsersService } from 'src/users/users.service';
-import { jwtConstants } from 'src/utils/constants';
 import { RolesModule } from 'src/roles/roles.module';
+import { jwtConfig } from 'src/configs/jwtConfig';
 import { UsersModule } from '../users/users.module';
 import { AuthController } from './auth.controller';
 import { AuthGuard } from './auth.guard';
@@ -19,11 +19,7 @@ import { GoogleStrategy } from './google.strategy';
     UsersModule,
     RolesModule,
     TypeOrmModule.forFeature([User]),
-    JwtModule.register({
-      global: true,
-      secret: jwtConstants.secret,
-      signOptions: { expiresIn: '1d' },
-    }),
+    JwtModule.register(jwtConfig),
     PassportModule.register({ defaultStrategy: 'google' }),
   ],
   providers: [

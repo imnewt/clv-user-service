@@ -1,8 +1,14 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Client, ClientKafka } from '@nestjs/microservices';
 
 import { microserviceConfig } from 'src/configs/microserviceConfig';
+import { User } from 'src/typeorm';
 import { UserNotFoundException } from 'src/users/exceptions/UserNotFound.exception';
 import { comparePasswords } from 'src/utils/bcrypt';
 import { SEND_WELCOME_MAIL, USER_ROLE_ID } from 'src/utils/constants';
@@ -24,21 +30,20 @@ export class AuthService {
     if (!user) {
       throw new UserNotFoundException();
     }
-
     const isMatched = comparePasswords(password, user.password);
     if (!isMatched) {
       throw new BadRequestException('Wrong password!');
     }
-
-    const payload = { userName: user.userName, sub: user.id };
-    return this.generateToken(payload);
+    const accessToken = await this.generateAccessToken(user);
+    const refreshToken = await this.generateRefreshToken(user);
+    return { accessToken, refreshToken };
   }
 
   async googleLogin(req) {
     if (!req.user) {
       throw new BadRequestException('Failed validation from Google!');
     }
-    let payload;
+    let userForPayload: User;
     const existedUser = await this.usersService.findUserByEmail(req.user.email);
     if (!existedUser) {
       const { email, firstName, lastName } = req.user;
@@ -53,17 +58,13 @@ export class AuthService {
         email,
         password: temporaryPassword,
       });
-      payload = {
-        userName: newUser.userName,
-        sub: newUser.id,
-      };
+      userForPayload = newUser;
     } else {
-      payload = {
-        userName: existedUser.userName,
-        sub: existedUser.id,
-      };
+      userForPayload = existedUser;
     }
-    return this.generateToken(payload);
+    const accessToken = await this.generateAccessToken(userForPayload);
+    const refreshToken = await this.generateRefreshToken(userForPayload);
+    return { accessToken, refreshToken };
   }
 
   async register(email: string, userName: string, password: string) {
@@ -80,12 +81,24 @@ export class AuthService {
     return newUser;
   }
 
-  private generateToken = async (payload: {
-    userName: string;
-    sub: string;
-  }) => {
-    return {
-      access_token: await this.jwtService.signAsync(payload),
-    };
+  async verifyRefreshToken(token: string): Promise<any> {
+    try {
+      const payload = await this.jwtService.verifyAsync(token);
+      return payload;
+    } catch (error) {
+      throw new UnauthorizedException('Invalid Refresh Token!');
+    }
+  }
+
+  generateAccessToken = async (user: User): Promise<string> => {
+    const payload = { userName: user.userName, sub: user.id };
+    return await this.jwtService.signAsync(payload);
+  };
+
+  private generateRefreshToken = async (user: User): Promise<string> => {
+    const payload = { userName: user.userName, sub: user.id };
+    return await this.jwtService.signAsync(payload, {
+      expiresIn: '7d',
+    });
   };
 }
