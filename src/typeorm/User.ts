@@ -41,12 +41,6 @@ export class User extends Base {
   })
   isActive: boolean;
 
-  @Column({
-    nullable: false,
-    default: false,
-  })
-  isDeleted: boolean;
-
   @ManyToMany(() => Role, (role) => role.users)
   @JoinTable({
     name: 'user_roles',

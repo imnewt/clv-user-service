@@ -20,9 +20,6 @@ export class UsersService {
 
   async getAllUsers() {
     const users = await this.userRepository.find({
-      where: {
-        isDeleted: false,
-      },
       relations: {
         roles: true,
       },
@@ -89,7 +86,6 @@ export class UsersService {
       throw new Error(`User with id ${userId} not found!`);
     }
 
-    user.isDeleted = true;
-    return await this.userRepository.save(user);
+    return await this.userRepository.remove(user);
   }
 }
