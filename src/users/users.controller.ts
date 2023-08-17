@@ -1,10 +1,12 @@
 import {
+  Body,
   ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
   Param,
-  Req,
+  Patch,
+  Post,
   // UseFilters,
   UseInterceptors,
 } from '@nestjs/common';
@@ -13,6 +15,8 @@ import { UserNotFoundException } from './exceptions/UserNotFound.exception';
 // import { HttpExceptionFilter } from './filters/httpException.filter';
 import { SerializedUser } from './types/user';
 import { UsersService } from './users.service';
+import { UpdateUserDto } from './dtos/update-user.dto';
+import { CreateUserDto } from './dtos/create-user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -20,14 +24,8 @@ export class UsersController {
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Get()
-  getUsers(@Req() req) {
-    console.log('req', req);
-    return this.userService.getUsers();
-  }
-
-  @Delete(':id')
-  deleteUser(@Param('id') userId) {
-    return this.userService.deleteUser(userId);
+  getAllUsers() {
+    return this.userService.getAllUsers();
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
@@ -41,5 +39,20 @@ export class UsersController {
     } else {
       throw new UserNotFoundException();
     }
+  }
+
+  @Post()
+  createUser(@Body() createUserDto: CreateUserDto) {
+    return this.userService.createUser(createUserDto);
+  }
+
+  @Patch(':id')
+  updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.userService.updateUser(id, updateUserDto);
+  }
+
+  @Delete(':id')
+  deleteUser(@Param('id') userId: string) {
+    return this.userService.deleteUser(userId);
   }
 }

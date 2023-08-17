@@ -6,13 +6,14 @@ import {
 } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { RolesModule } from 'src/roles/roles.module';
 import { User as UserEntity } from 'src/typeorm';
 import { ValidateUserMiddleware } from './middlewares/validate-user.middleware';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserEntity])],
+  imports: [TypeOrmModule.forFeature([UserEntity]), RolesModule],
   controllers: [UsersController],
   providers: [UsersService],
 })

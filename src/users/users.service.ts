@@ -3,24 +3,31 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { CreateUserDto } from './dtos/create-user.dto';
+import { UpdateUserDto } from './dtos/update-user.dto';
 import { SerializedUser } from './types/user';
 import { User as UserEntity } from '../typeorm';
 import { encodePassword } from 'src/utils/bcrypt';
+import { UserNotFoundException } from './exceptions/UserNotFound.exception';
+import { RolesService } from 'src/roles/roles.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    private readonly roleService: RolesService,
   ) {}
 
-  async getUsers() {
+  async getAllUsers() {
     const users = await this.userRepository.find({
       where: {
         isDeleted: false,
       },
       relations: {
         roles: true,
+      },
+      order: {
+        createdAt: 'desc',
       },
     });
     return users.map((user) => new SerializedUser(user));
@@ -29,6 +36,9 @@ export class UsersService {
   getUserById(id: string) {
     return this.userRepository.findOne({
       where: { id },
+      relations: {
+        roles: true,
+      },
     });
   }
 
@@ -38,13 +48,36 @@ export class UsersService {
     });
   }
 
-  createUser(dto: CreateUserDto) {
+  async createUser(dto: CreateUserDto) {
     const hashedPassword = encodePassword(dto.password);
+    const addedRoles = await this.roleService.getRolesByIds(dto.roleIds);
     const newUser = this.userRepository.create({
       ...dto,
       password: hashedPassword,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      roles: addedRoles,
     });
     return this.userRepository.save(newUser);
+  }
+
+  async updateUser(id: string, updateUserDto: UpdateUserDto) {
+    const user = await this.userRepository.findOne({
+      where: { id },
+    });
+    if (!user) {
+      throw new UserNotFoundException();
+    }
+    const updatedRoles = await this.roleService.getRolesByIds(
+      updateUserDto.roleIds,
+    );
+    const updatedUser = {
+      ...user,
+      ...updateUserDto,
+      updatedAt: new Date(),
+      roles: updatedRoles,
+    };
+    return await this.userRepository.save(updatedUser);
   }
 
   async deleteUser(userId: string) {

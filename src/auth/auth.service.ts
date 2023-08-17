@@ -5,7 +5,7 @@ import { Client, ClientKafka } from '@nestjs/microservices';
 import { microserviceConfig } from 'src/configs/microserviceConfig';
 import { UserNotFoundException } from 'src/users/exceptions/UserNotFound.exception';
 import { comparePasswords } from 'src/utils/bcrypt';
-import { SEND_WELCOME_MAIL } from 'src/utils/constants';
+import { SEND_WELCOME_MAIL, USER_ROLE_ID } from 'src/utils/constants';
 import { generateRandomPassword } from 'src/utils/functions';
 import { UsersService } from '../users/users.service';
 
@@ -47,6 +47,7 @@ export class AuthService {
         email,
         userName: `${firstName} ${lastName}`,
         password: temporaryPassword,
+        roleIds: [USER_ROLE_ID],
       });
       this.client.emit(SEND_WELCOME_MAIL, {
         email,
@@ -74,6 +75,7 @@ export class AuthService {
       email,
       userName,
       password,
+      roleIds: [USER_ROLE_ID],
     });
     return newUser;
   }
