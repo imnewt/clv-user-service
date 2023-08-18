@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 
 import { PermissionsService } from './permissions.service';
 
@@ -7,7 +7,8 @@ export class PermissionsController {
   constructor(private readonly permissionService: PermissionsService) {}
 
   @Get()
-  getRoles() {
-    return this.permissionService.getPermissions();
+  getRoles(@Query() query) {
+    const { search: searchTerm } = query;
+    return this.permissionService.getPermissions(searchTerm);
   }
 }

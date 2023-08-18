@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In } from 'typeorm';
+import { Repository, In, ILike } from 'typeorm';
 
 import { Permission as PermissionEntity } from 'src/typeorm';
 
@@ -11,8 +11,14 @@ export class PermissionsService {
     private readonly permissionRepository: Repository<PermissionEntity>,
   ) {}
 
-  async getPermissions() {
-    const permissions = await this.permissionRepository.find();
+  async getPermissions(searchTerm: string) {
+    const permissions = await this.permissionRepository.find({
+      where: [
+        {
+          name: ILike(`%${searchTerm}%`),
+        },
+      ],
+    });
     return permissions;
   }
 
