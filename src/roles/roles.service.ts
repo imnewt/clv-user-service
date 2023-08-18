@@ -30,6 +30,9 @@ export class RolesService {
       relations: {
         permissions: true,
       },
+      order: {
+        createdAt: 'desc',
+      },
     });
     return roles;
   }
@@ -47,12 +50,23 @@ export class RolesService {
     return this.roleRepository.findOne({
       where: { id: roleId },
       relations: {
+        users: true,
         permissions: true,
       },
     });
   }
 
+  getRoleByName(roleName: string) {
+    return this.roleRepository.findOne({
+      where: { name: roleName },
+    });
+  }
+
   async createRole(dto: CreateRoleDto) {
+    const role = await this.getRoleByName(dto.name);
+    if (role) {
+      throw new BadRequestException('Role name has been used!');
+    }
     const newRole = this.roleRepository.create(dto);
     const addedPermissions = await this.permissionService.getPermissionsByIds(
       dto.permissionIds,
@@ -69,11 +83,9 @@ export class RolesService {
     if ([ADMIN_ROLE_ID, USER_ROLE_ID].includes(roleId)) {
       throw new BadRequestException('You can not update this role!');
     }
-    const role = await this.roleRepository.findOne({
-      where: { id: roleId },
-    });
+    const role = await this.getRoleById(roleId);
     if (!role) {
-      throw new NotFoundException('Role not found!');
+      throw new NotFoundException(`Role with id ${roleId} not found!`);
     }
     const updatedPermissions = await this.permissionService.getPermissionsByIds(
       updateRoleDto.permissionIds,
@@ -91,11 +103,14 @@ export class RolesService {
     if ([ADMIN_ROLE_ID, USER_ROLE_ID].includes(roleId)) {
       throw new BadRequestException('You can not delete this role!');
     }
-    const role = await this.roleRepository.findOne({
-      where: { id: roleId },
-    });
+    const role = await this.getRoleById(roleId);
     if (!role) {
       throw new BadRequestException(`Role with id ${roleId} not found!`);
+    }
+    if (role.users.length) {
+      throw new BadRequestException(
+        'This role is being used. Please delete users who have this role first!',
+      );
     }
     return await this.roleRepository.remove(role);
   }

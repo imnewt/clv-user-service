@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, Repository } from 'typeorm';
 
@@ -54,6 +54,10 @@ export class UsersService {
   }
 
   async createUser(dto: CreateUserDto) {
+    const user = await this.getUserByEmail(dto.email);
+    if (user) {
+      throw new BadRequestException('Email has been used!');
+    }
     const hashedPassword = encodePassword(dto.password);
     const addedRoles = await this.roleService.getRolesByIds(dto.roleIds);
     const newUser = this.userRepository.create({
@@ -66,10 +70,8 @@ export class UsersService {
     return this.userRepository.save(newUser);
   }
 
-  async updateUser(id: string, updateUserDto: UpdateUserDto) {
-    const user = await this.userRepository.findOne({
-      where: { id },
-    });
+  async updateUser(userId: string, updateUserDto: UpdateUserDto) {
+    const user = await this.getUserById(userId);
     if (!user) {
       throw new UserNotFoundException();
     }
@@ -86,14 +88,10 @@ export class UsersService {
   }
 
   async deleteUser(userId: string) {
-    const user = await this.userRepository.findOne({
-      where: { id: userId },
-    });
-
+    const user = await this.getUserById(userId);
     if (!user) {
       throw new Error(`User with id ${userId} not found!`);
     }
-
     return await this.userRepository.remove(user);
   }
 }

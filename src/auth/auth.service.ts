@@ -68,10 +68,6 @@ export class AuthService {
   }
 
   async register(email: string, userName: string, password: string) {
-    const user = await this.usersService.getUserByEmail(email);
-    if (user) {
-      throw new BadRequestException('Your email has been used!');
-    }
     const newUser = this.usersService.createUser({
       email,
       userName,
