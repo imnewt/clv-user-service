@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   // UseFilters,
   UseInterceptors,
 } from '@nestjs/common';
@@ -24,8 +25,9 @@ export class UsersController {
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Get()
-  getAllUsers() {
-    return this.userService.getAllUsers();
+  getAllUsers(@Query() query) {
+    const { search: searchTerm } = query;
+    return this.userService.getAllUsers(searchTerm);
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
