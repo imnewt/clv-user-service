@@ -9,7 +9,7 @@ import { Client, ClientKafka } from '@nestjs/microservices';
 
 import { microserviceConfig } from 'src/configs/microserviceConfig';
 import { User } from 'src/typeorm';
-import { UserNotFoundException } from 'src/users/exceptions/UserNotFound.exception';
+import { UserNotFoundException } from 'src/modules/users/exceptions/UserNotFound.exception';
 import { comparePasswords } from 'src/utils/bcrypt';
 import { SEND_WELCOME_MAIL, USER_ROLE_ID } from 'src/utils/constants';
 import { generateRandomPassword } from 'src/utils/functions';

@@ -6,8 +6,9 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, ILike, Repository } from 'typeorm';
 
-import { PermissionsService } from 'src/permissions/permissions.service';
-import { Role as RoleEntity } from '../typeorm';
+import { PermissionsService } from 'src/modules/permissions/permissions.service';
+import { Role as RoleEntity } from '../../typeorm';
+import { FilterDto } from 'src/dtos/filter.dto';
 import { CreateRoleDto } from './dtos/create-role.dto';
 import { UpdateRoleDto } from './dtos/update-role.dto';
 import { ADMIN_ROLE_ID, USER_ROLE_ID } from 'src/utils/constants';
@@ -20,8 +21,9 @@ export class RolesService {
     private readonly permissionService: PermissionsService,
   ) {}
 
-  async getRoles(searchTerm: string) {
-    const roles = await this.roleRepository.find({
+  async getRoles(filter: FilterDto) {
+    const { searchTerm, pageNumber, pageSize } = filter;
+    const [roles, total] = await this.roleRepository.findAndCount({
       where: [
         {
           name: ILike(`%${searchTerm}%`),
@@ -33,8 +35,10 @@ export class RolesService {
       order: {
         createdAt: 'desc',
       },
+      skip: (pageNumber - 1) * pageSize,
+      take: pageSize,
     });
-    return roles;
+    return { roles, total };
   }
 
   async getRolesByIds(roleIds: string[]) {

@@ -5,8 +5,8 @@ import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { User } from 'src/typeorm';
-import { UsersService } from 'src/users/users.service';
-import { RolesModule } from 'src/roles/roles.module';
+import { UsersService } from 'src/modules/users/users.service';
+import { RolesModule } from 'src/modules/roles/roles.module';
 import { jwtConfig } from 'src/configs/jwtConfig';
 import { UsersModule } from '../users/users.module';
 import { AuthController } from './auth.controller';

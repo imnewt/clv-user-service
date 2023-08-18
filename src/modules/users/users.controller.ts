@@ -26,8 +26,12 @@ export class UsersController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Get()
   getAllUsers(@Query() query) {
-    const { search: searchTerm } = query;
-    return this.userService.getAllUsers(searchTerm);
+    const { searchTerm, pageNumber, pageSize } = query;
+    return this.userService.getAllUsers({
+      searchTerm,
+      pageNumber,
+      pageSize,
+    });
   }
 
   @UseInterceptors(ClassSerializerInterceptor)

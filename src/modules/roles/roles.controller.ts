@@ -19,8 +19,8 @@ export class RolesController {
 
   @Get()
   getRoles(@Query() query) {
-    const { search: searchTerm } = query;
-    return this.roleService.getRoles(searchTerm);
+    const { searchTerm, pageNumber, pageSize } = query;
+    return this.roleService.getRoles({ searchTerm, pageNumber, pageSize });
   }
 
   @Get(':id')

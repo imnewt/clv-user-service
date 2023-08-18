@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { RolesModule } from 'src/roles/roles.module';
+import { RolesModule } from 'src/modules/roles/roles.module';
 import { User as UserEntity } from 'src/typeorm';
 import { ValidateUserMiddleware } from './middlewares/validate-user.middleware';
 import { UsersController } from './users.controller';

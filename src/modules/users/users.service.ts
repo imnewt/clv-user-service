@@ -5,10 +5,11 @@ import { ILike, Repository } from 'typeorm';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { SerializedUser } from './types/user';
-import { User as UserEntity } from '../typeorm';
+import { User as UserEntity } from '../../typeorm';
 import { encodePassword } from 'src/utils/bcrypt';
 import { UserNotFoundException } from './exceptions/UserNotFound.exception';
-import { RolesService } from 'src/roles/roles.service';
+import { RolesService } from 'src/modules/roles/roles.service';
+import { FilterDto } from 'src/dtos/filter.dto';
 
 @Injectable()
 export class UsersService {
@@ -18,8 +19,9 @@ export class UsersService {
     private readonly roleService: RolesService,
   ) {}
 
-  async getAllUsers(searchTerm: string) {
-    const users = await this.userRepository.find({
+  async getAllUsers(filter: FilterDto) {
+    const { searchTerm, pageNumber, pageSize } = filter;
+    const [users, total] = await this.userRepository.findAndCount({
       where: [
         {
           email: ILike(`%${searchTerm}%`),
@@ -34,8 +36,11 @@ export class UsersService {
       order: {
         createdAt: 'desc',
       },
+      skip: (pageNumber - 1) * pageSize,
+      take: pageSize,
     });
-    return users.map((user) => new SerializedUser(user));
+    const serializedUsers = users.map((user) => new SerializedUser(user));
+    return { users: serializedUsers, total };
   }
 
   getUserById(id: string) {

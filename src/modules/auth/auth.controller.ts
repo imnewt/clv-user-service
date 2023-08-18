@@ -15,7 +15,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { Request, Response } from 'express';
 
 import { microserviceConfig } from 'src/configs/microserviceConfig';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from 'src/modules/users/users.service';
 import {
   DASHBOARD_URL,
   INVALID_REFRESH_TOKEN,

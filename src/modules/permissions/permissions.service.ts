@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In, ILike } from 'typeorm';
 
 import { Permission as PermissionEntity } from 'src/typeorm';
+import { FilterDto } from 'src/dtos/filter.dto';
 
 @Injectable()
 export class PermissionsService {
@@ -11,15 +12,18 @@ export class PermissionsService {
     private readonly permissionRepository: Repository<PermissionEntity>,
   ) {}
 
-  async getPermissions(searchTerm: string) {
-    const permissions = await this.permissionRepository.find({
+  async getPermissions(filter: FilterDto) {
+    const { searchTerm, pageNumber, pageSize } = filter;
+    const [permissions, total] = await this.permissionRepository.findAndCount({
       where: [
         {
           name: ILike(`%${searchTerm}%`),
         },
       ],
+      skip: (pageNumber - 1) * pageSize,
+      take: pageSize,
     });
-    return permissions;
+    return { permissions, total };
   }
 
   async getPermissionsByIds(permissionIds: string[]) {

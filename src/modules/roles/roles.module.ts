@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { RolesController } from './roles.controller';
 import { RolesService } from './roles.service';
 import { Role as RoleEntity } from 'src/typeorm';
-import { PermissionsModule } from 'src/permissions/permissions.module';
+import { PermissionsModule } from 'src/modules/permissions/permissions.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([RoleEntity]), PermissionsModule],

@@ -8,7 +8,11 @@ export class PermissionsController {
 
   @Get()
   getRoles(@Query() query) {
-    const { search: searchTerm } = query;
-    return this.permissionService.getPermissions(searchTerm);
+    const { searchTerm, pageNumber, pageSize } = query;
+    return this.permissionService.getPermissions({
+      searchTerm,
+      pageNumber,
+      pageSize,
+    });
   }
 }
