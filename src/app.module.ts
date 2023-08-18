@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { SocketModule } from './socket/socket.module';
 import { databaseConfig } from './configs/databaseConfig';
 import { RolesModule } from './roles/roles.module';
+import { PermissionsModule } from './permissions/permissions.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { RolesModule } from './roles/roles.module';
     TypeOrmModule.forRoot(databaseConfig),
     SocketModule,
     RolesModule,
+    PermissionsModule,
   ],
 })
 export class AppModule {}

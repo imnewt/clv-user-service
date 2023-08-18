@@ -26,7 +26,7 @@ export class AuthService {
   client: ClientKafka;
 
   async login(email: string, password: string) {
-    const user = await this.usersService.findUserByEmail(email);
+    const user = await this.usersService.getUserByEmail(email);
     if (!user) {
       throw new UserNotFoundException();
     }
@@ -44,7 +44,7 @@ export class AuthService {
       throw new BadRequestException('Failed validation from Google!');
     }
     let userForPayload: User;
-    const existedUser = await this.usersService.findUserByEmail(req.user.email);
+    const existedUser = await this.usersService.getUserByEmail(req.user.email);
     if (!existedUser) {
       const { email, firstName, lastName } = req.user;
       const temporaryPassword = generateRandomPassword();
@@ -68,7 +68,7 @@ export class AuthService {
   }
 
   async register(email: string, userName: string, password: string) {
-    const user = await this.usersService.findUserByEmail(email);
+    const user = await this.usersService.getUserByEmail(email);
     if (user) {
       throw new BadRequestException('Your email has been used!');
     }
