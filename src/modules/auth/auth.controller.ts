@@ -22,7 +22,7 @@ import {
   SEND_WELCOME_MAIL,
 } from 'src/utils/constants';
 import { AuthService } from './auth.service';
-import { Public } from './decorators/public.decorator';
+import { Public } from '../../decorators/public.decorator';
 import { LoginDto } from './dtos/login.dto';
 import { RegisterDto } from './dtos/register.dto';
 import { TokenDto } from './dtos/token.dto';

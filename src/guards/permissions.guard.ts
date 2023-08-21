@@ -1,6 +1,9 @@
 import {
+  BadRequestException,
   CanActivate,
   ExecutionContext,
+  forwardRef,
+  Inject,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -8,26 +11,27 @@ import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 
+import { PERMISSION_KEY } from 'src/decorators/permission.decorator';
+import { UsersService } from 'src/modules/users/users.service';
 import { jwtConstants } from 'src/utils/constants';
-import { IS_PUBLIC_KEY } from '../../decorators/public.decorator';
 
 @Injectable()
-export class AuthGuard implements CanActivate {
+export class PermissionGuard implements CanActivate {
   constructor(
-    private jwtService: JwtService,
-    private reflector: Reflector,
+    private readonly jwtService: JwtService,
+    private readonly reflector: Reflector,
+    private readonly userService: UsersService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+    const neededPermission = this.reflector.get<string>(
+      PERMISSION_KEY,
       context.getHandler(),
-      context.getClass(),
-    ]);
+    );
 
-    if (isPublic) {
+    if (!neededPermission) {
       return true;
     }
-
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
     if (!token) {
@@ -37,13 +41,16 @@ export class AuthGuard implements CanActivate {
       const payload = await this.jwtService.verifyAsync(token, {
         secret: jwtConstants.secret,
       });
-      // 💡 We're assigning the payload to the request object here
-      // so that we can access it in our route handlers
-      request['user'] = payload;
+      const userPermissions = await this.userService.getUserPermissions(
+        payload.sub,
+      );
+      const hasPermission = userPermissions.find(
+        (permission) => permission.id === neededPermission,
+      );
+      return !!hasPermission;
     } catch {
-      throw new UnauthorizedException();
+      throw new BadRequestException();
     }
-    return true;
   }
 
   private extractTokenFromHeader(request: Request): string | undefined {
