@@ -53,6 +53,18 @@ export class UsersService {
     });
   }
 
+  getUserByEmail(email: string) {
+    return this.userRepository.findOne({
+      where: { email },
+    });
+  }
+
+  getUserByResetToken(resetToken: string) {
+    return this.userRepository.findOne({
+      where: { resetToken },
+    });
+  }
+
   async getUserPermissions(userId: string) {
     const user = await this.getUserById(userId);
     const rolesIds = user.roles.map((role) => role.id);
@@ -62,12 +74,6 @@ export class UsersService {
       [],
     );
     return uniqBy(permissions, 'id');
-  }
-
-  getUserByEmail(email: string) {
-    return this.userRepository.findOne({
-      where: { email },
-    });
   }
 
   async createUser(dto: CreateUserDto) {
@@ -85,6 +91,10 @@ export class UsersService {
       roles: addedRoles,
     });
     return this.userRepository.save(newUser);
+  }
+
+  saveUser(user: UserEntity) {
+    return this.userRepository.save(user);
   }
 
   async updateUser(userId: string, updateUserDto: UpdateUserDto) {

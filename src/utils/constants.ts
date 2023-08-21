@@ -13,6 +13,7 @@ export const KAFKA_BROKER_ADDRESS = 'localhost:9092';
 export const KAFKA_GROUP_ID = 'user-service';
 
 export const SEND_WELCOME_MAIL = 'send-welcome-mail';
+export const SEND_RESET_PASSWORD_MAIL = 'send-reset-password-mail';
 
 // Database
 export const ADMIN_ROLE_ID = '1';

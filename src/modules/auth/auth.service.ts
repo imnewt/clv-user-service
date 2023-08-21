@@ -10,8 +10,12 @@ import { Client, ClientKafka } from '@nestjs/microservices';
 import { microserviceConfig } from 'src/configs/microserviceConfig';
 import { User } from 'src/typeorm';
 import { UserNotFoundException } from 'src/modules/users/exceptions/UserNotFound.exception';
-import { comparePasswords } from 'src/utils/bcrypt';
-import { SEND_WELCOME_MAIL, USER_ROLE_ID } from 'src/utils/constants';
+import { comparePasswords, encodePassword } from 'src/utils/bcrypt';
+import {
+  SEND_RESET_PASSWORD_MAIL,
+  SEND_WELCOME_MAIL,
+  USER_ROLE_ID,
+} from 'src/utils/constants';
 import { generateRandomPassword } from 'src/utils/functions';
 import { UsersService } from '../users/users.service';
 
@@ -34,7 +38,7 @@ export class AuthService {
     if (!isMatched) {
       throw new BadRequestException('Wrong password!');
     }
-    const accessToken = await this.generateAccessToken(user);
+    const accessToken = await this.generateToken(user);
     const refreshToken = await this.generateRefreshToken(user);
     return { accessToken, refreshToken, userId: user.id };
   }
@@ -62,7 +66,7 @@ export class AuthService {
     } else {
       userForPayload = existedUser;
     }
-    const accessToken = await this.generateAccessToken(userForPayload);
+    const accessToken = await this.generateToken(userForPayload);
     const refreshToken = await this.generateRefreshToken(userForPayload);
     return { accessToken, refreshToken, userId: userForPayload.id };
   }
@@ -77,6 +81,41 @@ export class AuthService {
     return newUser;
   }
 
+  async forgotPassword(email: string) {
+    const user = await this.usersService.getUserByEmail(email);
+    if (!user) {
+      throw new UserNotFoundException();
+    }
+    const resetToken = await this.generateToken(user);
+    const expirationTime = new Date();
+    expirationTime.setHours(expirationTime.getHours() + 1);
+    user.resetToken = resetToken;
+    user.resetTokenExpires = expirationTime;
+    this.usersService.saveUser(user);
+    return this.client.emit(SEND_RESET_PASSWORD_MAIL, {
+      email,
+      token: resetToken,
+    });
+  }
+
+  async resetPassword(resetToken: string, newPassword: string) {
+    const user = await this.usersService.getUserByResetToken(resetToken);
+    if (!user) {
+      throw new UserNotFoundException();
+    }
+    if (user.resetTokenExpires < new Date()) {
+      throw new BadRequestException('Token has expired');
+    }
+
+    const newHashedPassword = encodePassword(newPassword);
+    return this.usersService.saveUser({
+      ...user,
+      resetToken: null,
+      resetTokenExpires: null,
+      password: newHashedPassword,
+    });
+  }
+
   async verifyRefreshToken(token: string): Promise<any> {
     try {
       const payload = await this.jwtService.verifyAsync(token);
@@ -86,7 +125,7 @@ export class AuthService {
     }
   }
 
-  generateAccessToken = async (user: User): Promise<string> => {
+  generateToken = async (user: User): Promise<string> => {
     const payload = { userName: user.userName, sub: user.id };
     return await this.jwtService.signAsync(payload);
   };

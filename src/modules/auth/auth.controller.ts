@@ -20,6 +20,7 @@ import {
   DASHBOARD_URL,
   INVALID_REFRESH_TOKEN,
   SEND_WELCOME_MAIL,
+  SEND_RESET_PASSWORD_MAIL,
 } from 'src/utils/constants';
 import { AuthService } from './auth.service';
 import { Public } from '../../decorators/public.decorator';
@@ -38,7 +39,7 @@ export class AuthController implements OnModuleInit {
   client: ClientKafka;
 
   onModuleInit() {
-    const requestPatterns = [SEND_WELCOME_MAIL];
+    const requestPatterns = [SEND_WELCOME_MAIL, SEND_RESET_PASSWORD_MAIL];
     requestPatterns.forEach((pattern) => {
       this.client.subscribeToResponseOf(pattern);
     });
@@ -85,8 +86,23 @@ export class AuthController implements OnModuleInit {
       throw new UnauthorizedException(INVALID_REFRESH_TOKEN);
     }
     const user = await this.userService.getUserById(payload.sub);
-    const accessToken = await this.authService.generateAccessToken(user);
+    const accessToken = await this.authService.generateToken(user);
 
     return { accessToken, refreshToken };
+  }
+
+  @Public()
+  @Post('forgot-password')
+  async forgotPassword(@Body() { email }: { email: string }) {
+    return this.authService.forgotPassword(email);
+  }
+
+  @Public()
+  @Post('reset-password')
+  async resetPassword(
+    @Body()
+    { resetToken, newPassword }: { resetToken: string; newPassword: string },
+  ) {
+    return this.authService.resetPassword(resetToken, newPassword);
   }
 }

@@ -41,6 +41,18 @@ export class User extends Base {
   })
   isActive: boolean;
 
+  @Column({
+    nullable: true,
+    default: '',
+  })
+  resetToken: string;
+
+  @Column({
+    nullable: true,
+    default: new Date(),
+  })
+  resetTokenExpires: Date;
+
   @ManyToMany(() => Role, (role) => role.users)
   @JoinTable({
     name: 'user_roles',
