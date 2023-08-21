@@ -65,12 +65,11 @@ export class AuthController implements OnModuleInit {
   @Get('login/google/redirect')
   @UseGuards(AuthGuard('google'))
   async googleAuthRedirect(@Req() req: Request, @Res() res: Response) {
-    const { accessToken, refreshToken } = await this.authService.googleLogin(
-      req,
-    );
+    const { accessToken, refreshToken, userId } =
+      await this.authService.googleLogin(req);
     if (accessToken && refreshToken) {
       return res.redirect(
-        `${DASHBOARD_URL}?accessToken=${accessToken}&refreshToken=${refreshToken}`,
+        `${DASHBOARD_URL}?accessToken=${accessToken}&refreshToken=${refreshToken}&userId=${userId}`,
       );
     }
   }

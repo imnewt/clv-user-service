@@ -1,3 +1,4 @@
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import * as cors from 'cors';
 
@@ -7,10 +8,11 @@ import { USER_SERVICE_PORT } from './utils/constants';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  //app.connectMicroservice(microserviceConfig);
+  app.connectMicroservice(microserviceConfig);
+  app.useGlobalPipes(new ValidationPipe());
   app.setGlobalPrefix('api');
   app.use(cors());
-  // await app.startAllMicroservices();
+  await app.startAllMicroservices();
   await app.listen(USER_SERVICE_PORT);
 }
 bootstrap();

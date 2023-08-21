@@ -1,11 +1,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, Repository } from 'typeorm';
+import { uniqBy } from 'lodash';
 
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { SerializedUser } from './types/user';
-import { User as UserEntity } from '../../typeorm';
+import { Permission, User as UserEntity } from '../../typeorm';
 import { encodePassword } from 'src/utils/bcrypt';
 import { UserNotFoundException } from './exceptions/UserNotFound.exception';
 import { RolesService } from 'src/modules/roles/roles.service';
@@ -50,6 +51,17 @@ export class UsersService {
         roles: true,
       },
     });
+  }
+
+  async getUserPermissions(userId: string) {
+    const user = await this.getUserById(userId);
+    const rolesIds = user.roles.map((role) => role.id);
+    const roles = await this.roleService.getRolesByIds(rolesIds);
+    const permissions = roles.reduce<Permission[]>(
+      (res, role) => [...res, ...role.permissions],
+      [],
+    );
+    return uniqBy(permissions, 'id');
   }
 
   getUserByEmail(email: string) {

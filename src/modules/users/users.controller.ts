@@ -37,8 +37,8 @@ export class UsersController {
   @UseInterceptors(ClassSerializerInterceptor)
   // @UseFilters(HttpExceptionFilter)
   @Get(':id')
-  async getUserById(@Param('id') id: string) {
-    const data = this.userService.getUserById(id);
+  async getUserById(@Param('id') userId: string) {
+    const data = this.userService.getUserById(userId);
     const user = await data;
     if (user) {
       return new SerializedUser(user);
@@ -47,14 +47,22 @@ export class UsersController {
     }
   }
 
+  @Get(':id/permissions')
+  getUserPermissions(@Param('id') userId: string) {
+    return this.userService.getUserPermissions(userId);
+  }
+
   @Post('/create')
   createUser(@Body() createUserDto: CreateUserDto) {
     return this.userService.createUser(createUserDto);
   }
 
   @Patch(':id')
-  updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.updateUser(id, updateUserDto);
+  updateUser(
+    @Param('id') userId: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    return this.userService.updateUser(userId, updateUserDto);
   }
 
   @Delete(':id')

@@ -46,6 +46,9 @@ export class RolesService {
       where: {
         id: In(roleIds),
       },
+      relations: {
+        permissions: true,
+      },
     });
     return roles;
   }

@@ -36,7 +36,7 @@ export class AuthService {
     }
     const accessToken = await this.generateAccessToken(user);
     const refreshToken = await this.generateRefreshToken(user);
-    return { accessToken, refreshToken };
+    return { accessToken, refreshToken, userId: user.id };
   }
 
   async googleLogin(req) {
@@ -64,7 +64,7 @@ export class AuthService {
     }
     const accessToken = await this.generateAccessToken(userForPayload);
     const refreshToken = await this.generateRefreshToken(userForPayload);
-    return { accessToken, refreshToken };
+    return { accessToken, refreshToken, userId: userForPayload.id };
   }
 
   async register(email: string, userName: string, password: string) {

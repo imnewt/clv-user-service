@@ -9,9 +9,9 @@ export const DASHBOARD_URL = `http://localhost:${FRONTEND_SERVICE_PORT}`;
 export const INVALID_REFRESH_TOKEN = 'Invalid Refresh Token';
 
 // Kafka
-export const KAFKA_BROKER_ADDRESS = 'http://localhost:9092';
-export const KAFKA_CLIENT_ID = 'user-service-app';
-export const KAFKA_GROUP_ID = 'user-service-group';
+export const KAFKA_BROKER_ADDRESS = 'localhost:9092';
+export const KAFKA_GROUP_ID = 'user-service';
+
 export const SEND_WELCOME_MAIL = 'send-welcome-mail';
 
 // Database
