@@ -29,6 +29,10 @@ export enum PERMISSION {
   UPDATE_ROLE = '7',
   DELETE_ROLE = '8',
   READ_PERMISSION = '9',
+  CREATE_VESSEL = '10',
+  READ_VESSEL = '11',
+  UPDATE_VESSEL = '12',
+  DELETE_VESSEL = '13',
 }
 
 export const jwtConstants = {
