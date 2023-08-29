@@ -3,8 +3,8 @@ import { NestFactory } from '@nestjs/core';
 import * as cors from 'cors';
 
 import { AppModule } from './app.module';
-import { microserviceConfig } from './configs/microserviceConfig';
-import { USER_SERVICE_PORT } from './utils/constants';
+import { microserviceConfig } from './shared/configs/microserviceConfig';
+import { USER_SERVICE_PORT } from './shared/utilities/constants';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

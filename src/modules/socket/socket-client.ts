@@ -1,7 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Socket, io } from 'socket.io-client';
 
-import { GATEWAY_HOST_URL } from 'src/utils/constants';
+import { GATEWAY_HOST_URL } from 'src/shared/utilities/constants';
 
 @Injectable()
 export class SocketClient implements OnModuleInit {

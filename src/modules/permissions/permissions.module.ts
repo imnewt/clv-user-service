@@ -1,10 +1,10 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { PermissionsService } from './permissions.service';
-import { PermissionsController } from './permissions.controller';
-import { Permission as PermissionEntity } from 'src/typeorm';
+import { PermissionsController } from './infrastructure/controllers/permissions.controller';
+import { PermissionsService } from './services/permissions.service';
 import { UsersModule } from '../users/users.module';
+import { Permission as PermissionEntity } from 'src/shared/entities';
 
 @Module({
   imports: [
