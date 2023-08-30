@@ -5,7 +5,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import { PermissionGuard } from 'src/shared/guards/permissions.guard';
+import { PermissionGuard } from '@shared/guards/permissions.guard';
 
 export const PERMISSION_KEY = 'hasPermission';
 export const HasPermission = (permission: string): CustomDecorator<string> =>
