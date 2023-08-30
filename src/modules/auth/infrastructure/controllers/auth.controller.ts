@@ -14,19 +14,19 @@ import { Client, ClientKafka } from '@nestjs/microservices';
 import { AuthGuard } from '@nestjs/passport';
 import { Request, Response } from 'express';
 
-import { UsersService } from 'src/modules/users/services/users.service';
-import { AuthService } from '../../services/auth.service';
-import { LoginDto } from '../../dtos/login.dto';
-import { RegisterDto } from '../../dtos/register.dto';
-import { TokenDto } from '../../dtos/token.dto';
-import { Public } from 'src/shared/decorators/public.decorator';
-import { microserviceConfig } from 'src/shared/configs/microserviceConfig';
+import { UsersService } from '@users/services/users.service';
+import { AuthService } from '@auth/services/auth.service';
+import { LoginDto } from '@auth/dtos/login.dto';
+import { RegisterDto } from '@auth/dtos/register.dto';
+import { TokenDto } from '@auth/dtos/token.dto';
+import { Public } from '@shared/decorators/public.decorator';
+import { microserviceConfig } from '@shared/configs/microserviceConfig';
 import {
   DASHBOARD_URL,
   INVALID_REFRESH_TOKEN,
   SEND_WELCOME_MAIL,
   SEND_RESET_PASSWORD_MAIL,
-} from 'src/shared/utilities/constants';
+} from '@shared/utilities/constants';
 
 @Controller('auth')
 export class AuthController implements OnModuleInit {

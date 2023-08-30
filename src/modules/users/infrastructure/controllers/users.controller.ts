@@ -11,13 +11,13 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 
-import { UsersService } from '../../services/users.service';
-import { CreateUserDto } from '../../dtos/create-user.dto';
-import { UpdateUserDto } from '../../dtos/update-user.dto';
-import { SerializedUser } from '../../types/user.type';
-import { UserNotFoundException } from 'src/shared/exceptions/userNotFound.exception';
-import { Permission } from 'src/shared/decorators/permission.decorator';
-import { PERMISSION } from 'src/shared/utilities/constants';
+import { UsersService } from '@users/services/users.service';
+import { CreateUserDto } from '@users/dtos/create-user.dto';
+import { UpdateUserDto } from '@users/dtos/update-user.dto';
+import { SerializedUser } from '@users/types/user.type';
+import { UserNotFoundException } from '@shared/exceptions/userNotFound.exception';
+import { Permission } from '@shared/decorators/permission.decorator';
+import { PERMISSION } from '@shared/utilities/constants';
 
 @Controller('users')
 export class UsersController {

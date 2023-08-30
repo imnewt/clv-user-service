@@ -1,8 +1,8 @@
 import { Controller, Get, Query } from '@nestjs/common';
 
-import { PermissionsService } from '../../services/permissions.service';
-import { Permission } from 'src/shared/decorators/permission.decorator';
-import { PERMISSION } from 'src/shared/utilities/constants';
+import { PermissionsService } from '@permissions/services/permissions.service';
+import { Permission } from '@shared/decorators/permission.decorator';
+import { PERMISSION } from '@shared/utilities/constants';
 
 @Controller('permissions')
 export class PermissionsController {

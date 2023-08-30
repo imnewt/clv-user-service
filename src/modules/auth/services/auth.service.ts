@@ -7,17 +7,17 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { Client, ClientKafka } from '@nestjs/microservices';
 
-import { UsersService } from 'src/modules/users/services/users.service';
-import { microserviceConfig } from 'src/shared/configs/microserviceConfig';
-import { User } from 'src/shared/entities';
-import { UserNotFoundException } from 'src/shared/exceptions/userNotFound.exception';
-import { comparePasswords, encodePassword } from 'src/shared/utilities/bcrypt';
-import { generateRandomPassword } from 'src/shared/utilities/functions';
+import { UsersService } from '@users/services/users.service';
+import { microserviceConfig } from '@shared/configs/microserviceConfig';
+import { User } from '@shared/entities';
+import { UserNotFoundException } from '@shared/exceptions/userNotFound.exception';
+import { comparePasswords, encodePassword } from '@shared/utilities/bcrypt';
+import { generateRandomPassword } from '@shared/utilities/functions';
 import {
   SEND_RESET_PASSWORD_MAIL,
   SEND_WELCOME_MAIL,
   USER_ROLE_ID,
-} from 'src/shared/utilities/constants';
+} from '@shared/utilities/constants';
 
 @Injectable()
 export class AuthService {

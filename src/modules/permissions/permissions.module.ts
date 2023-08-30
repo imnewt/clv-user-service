@@ -3,8 +3,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { PermissionsController } from './infrastructure/controllers/permissions.controller';
 import { PermissionsService } from './services/permissions.service';
-import { UsersModule } from '../users/users.module';
-import { Permission as PermissionEntity } from 'src/shared/entities';
+import { UsersModule } from '@users/users.module';
+import { Permission as PermissionEntity } from '@shared/entities';
 
 @Module({
   imports: [

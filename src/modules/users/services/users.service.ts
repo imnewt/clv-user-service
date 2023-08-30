@@ -3,14 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, Repository } from 'typeorm';
 import { uniqBy } from 'lodash';
 
-import { RolesService } from 'src/modules/roles/services/roles.service';
+import { RolesService } from '@roles/services/roles.service';
 import { CreateUserDto } from '../dtos/create-user.dto';
 import { UpdateUserDto } from '../dtos/update-user.dto';
 import { SerializedUser } from '../types/user.type';
-import { Permission, User } from 'src/shared/entities';
-import { encodePassword } from 'src/shared/utilities/bcrypt';
-import { UserNotFoundException } from 'src/shared/exceptions/userNotFound.exception';
-import { FilterDto } from 'src/shared/dtos/filter.dto';
+import { Permission, User } from '@shared/entities';
+import { encodePassword } from '@shared/utilities/bcrypt';
+import { UserNotFoundException } from '@shared/exceptions/userNotFound.exception';
+import { FilterDto } from '@shared/dtos/filter.dto';
 
 @Injectable()
 export class UsersService {

@@ -9,11 +9,11 @@ import {
   Query,
 } from '@nestjs/common';
 
-import { RolesService } from '../../services/roles.service';
-import { CreateRoleDto } from '../../dtos/create-role.dto';
-import { UpdateRoleDto } from '../../dtos/update-role.dto';
-import { Permission } from 'src/shared/decorators/permission.decorator';
-import { PERMISSION } from 'src/shared/utilities/constants';
+import { RolesService } from '@roles/services/roles.service';
+import { CreateRoleDto } from '@roles/dtos/create-role.dto';
+import { UpdateRoleDto } from '@roles/dtos/update-role.dto';
+import { Permission } from '@shared/decorators/permission.decorator';
+import { PERMISSION } from '@shared/utilities/constants';
 
 @Controller('roles')
 export class RolesController {

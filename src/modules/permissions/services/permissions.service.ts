@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In, ILike } from 'typeorm';
 
-import { Permission } from 'src/shared/entities';
-import { FilterDto } from 'src/shared/dtos/filter.dto';
+import { Permission } from '@shared/entities';
+import { FilterDto } from '@shared/dtos/filter.dto';
 
 @Injectable()
 export class PermissionsService {

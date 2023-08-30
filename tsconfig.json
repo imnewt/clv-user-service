@@ -9,7 +9,24 @@
     "target": "ES2021",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./",
+    "baseUrl": ".",
+    "paths": {
+      "@auth/*": [
+        "src/modules/auth/*"
+      ],
+      "@users/*": [
+        "src/modules/users/*"
+      ],
+      "@roles/*": [
+        "src/modules/roles/*"
+      ],
+      "@permissions/*": [
+        "src/modules/permissions/*"
+      ],
+      "@shared/*": [
+        "src/shared/*"
+      ],
+    },
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": false,

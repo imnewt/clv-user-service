@@ -6,12 +6,12 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, ILike, Repository } from 'typeorm';
 
-import { FilterDto } from 'src/shared/dtos/filter.dto';
-import { ADMIN_ROLE_ID, USER_ROLE_ID } from 'src/shared/utilities/constants';
-import { Role } from 'src/shared/entities';
+import { PermissionsService } from '@permissions/services/permissions.service';
 import { CreateRoleDto } from '../dtos/create-role.dto';
 import { UpdateRoleDto } from '../dtos/update-role.dto';
-import { PermissionsService } from 'src/modules/permissions/services/permissions.service';
+import { FilterDto } from '@shared/dtos/filter.dto';
+import { ADMIN_ROLE_ID, USER_ROLE_ID } from '@shared/utilities/constants';
+import { Role } from '@shared/entities';
 
 @Injectable()
 export class RolesService {
