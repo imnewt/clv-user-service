@@ -1,4 +1,4 @@
-import { BadRequestException } from '@nestjs/common';
+import { HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -10,7 +10,8 @@ import { CreateUserDto } from '../dtos/create-user.dto';
 import { UpdateUserDto } from '../dtos/update-user.dto';
 import { User, Role, Permission } from '@shared/entities';
 import { FilterDto } from '@shared/dtos/filter.dto';
-import { UserNotFoundException } from '@shared/exceptions/userNotFound.exception';
+import { BusinessException } from '@shared/exceptions/business.exception';
+import { ERROR, MODULE } from '@shared/utilities/constants';
 
 describe('UsersService', () => {
   let usersService: UsersService;
@@ -80,7 +81,13 @@ describe('UsersService', () => {
 
       const result = usersService.getUserById(userId);
 
-      await expect(result).rejects.toThrow(UserNotFoundException);
+      await expect(result).rejects.toThrow(
+        new BusinessException(
+          MODULE.USERS,
+          [ERROR.USER_NOT_FOUND],
+          HttpStatus.NOT_FOUND,
+        ),
+      );
     });
   });
 
@@ -113,7 +120,13 @@ describe('UsersService', () => {
 
       const result = usersService.getUserByResetToken(resetToken);
 
-      await expect(result).rejects.toThrow(UserNotFoundException);
+      await expect(result).rejects.toThrow(
+        new BusinessException(
+          MODULE.USERS,
+          [ERROR.USER_NOT_FOUND],
+          HttpStatus.NOT_FOUND,
+        ),
+      );
     });
   });
 
@@ -145,7 +158,13 @@ describe('UsersService', () => {
 
       const result = usersService.getUserPermissions(userId);
 
-      await expect(result).rejects.toThrow(UserNotFoundException);
+      await expect(result).rejects.toThrow(
+        new BusinessException(
+          MODULE.USERS,
+          [ERROR.USER_NOT_FOUND],
+          HttpStatus.NOT_FOUND,
+        ),
+      );
     });
   });
 
@@ -179,7 +198,11 @@ describe('UsersService', () => {
       const result = usersService.createUser(createUserDto);
 
       expect(result).rejects.toThrow(
-        new BadRequestException('Email has been used!'),
+        new BusinessException(
+          MODULE.USERS,
+          [ERROR.EMAIL_HAS_BEEN_USED],
+          HttpStatus.BAD_REQUEST,
+        ),
       );
     });
   });
@@ -222,7 +245,13 @@ describe('UsersService', () => {
 
       const result = usersService.updateUser(updateUserDto.id, updateUserDto);
 
-      expect(result).rejects.toThrow(UserNotFoundException);
+      expect(result).rejects.toThrow(
+        new BusinessException(
+          MODULE.USERS,
+          [ERROR.USER_NOT_FOUND],
+          HttpStatus.NOT_FOUND,
+        ),
+      );
     });
   });
 
@@ -243,7 +272,13 @@ describe('UsersService', () => {
 
       const result = usersService.deleteUser(userId);
 
-      await expect(result).rejects.toThrow(UserNotFoundException);
+      await expect(result).rejects.toThrow(
+        new BusinessException(
+          MODULE.USERS,
+          [ERROR.USER_NOT_FOUND],
+          HttpStatus.NOT_FOUND,
+        ),
+      );
     });
   });
 });

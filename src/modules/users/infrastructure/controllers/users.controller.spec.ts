@@ -1,4 +1,3 @@
-import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
@@ -11,9 +10,11 @@ import { UpdateUserDto } from '@users/dtos/update-user.dto';
 import { SerializedUser } from '@users/types/user.type';
 import { RolesService } from '@roles/services/roles.service';
 import { PermissionsService } from '@permissions/services/permissions.service';
-import { UserNotFoundException } from '@shared/exceptions/userNotFound.exception';
 import { User, Role, Permission } from '@shared/entities';
 import { jwtConfig } from '@shared/configs/jwtConfig';
+import { BusinessException } from '@shared/exceptions/business.exception';
+import { ERROR, MODULE } from '@shared/utilities/constants';
+import { HttpStatus } from '@nestjs/common';
 
 describe('UsersController', () => {
   let usersController: UsersController;
@@ -87,7 +88,13 @@ describe('UsersController', () => {
 
       const result = usersController.getUserById(userId);
 
-      await expect(result).rejects.toThrow(UserNotFoundException);
+      await expect(result).rejects.toThrow(
+        new BusinessException(
+          MODULE.USERS,
+          [ERROR.USER_NOT_FOUND],
+          HttpStatus.NOT_FOUND,
+        ),
+      );
     });
   });
 
@@ -119,7 +126,13 @@ describe('UsersController', () => {
 
       const result = usersController.getUserPermissions(userId);
 
-      await expect(result).rejects.toThrow(UserNotFoundException);
+      await expect(result).rejects.toThrow(
+        new BusinessException(
+          MODULE.USERS,
+          [ERROR.USER_NOT_FOUND],
+          HttpStatus.NOT_FOUND,
+        ),
+      );
     });
   });
 
@@ -153,7 +166,11 @@ describe('UsersController', () => {
       const result = usersController.createUser(createUserDto);
 
       expect(result).rejects.toThrow(
-        new BadRequestException('Email has been used!'),
+        new BusinessException(
+          MODULE.USERS,
+          [ERROR.EMAIL_HAS_BEEN_USED],
+          HttpStatus.BAD_REQUEST,
+        ),
       );
     });
   });
@@ -188,7 +205,13 @@ describe('UsersController', () => {
         updateUserDto,
       );
 
-      expect(result).rejects.toThrow(UserNotFoundException);
+      expect(result).rejects.toThrow(
+        new BusinessException(
+          MODULE.USERS,
+          [ERROR.USER_NOT_FOUND],
+          HttpStatus.NOT_FOUND,
+        ),
+      );
     });
   });
 
@@ -209,7 +232,13 @@ describe('UsersController', () => {
 
       const result = usersController.deleteUser(userId);
 
-      await expect(result).rejects.toThrow(UserNotFoundException);
+      await expect(result).rejects.toThrow(
+        new BusinessException(
+          MODULE.USERS,
+          [ERROR.USER_NOT_FOUND],
+          HttpStatus.NOT_FOUND,
+        ),
+      );
     });
   });
 });
