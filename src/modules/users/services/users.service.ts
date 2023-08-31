@@ -44,13 +44,17 @@ export class UsersService {
     return { users: serializedUsers, total };
   }
 
-  getUserById(id: string) {
-    return this.userRepository.findOne({
-      where: { id },
+  async getUserById(userId: string) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
       relations: {
         roles: true,
       },
     });
+    if (!user) {
+      throw new UserNotFoundException();
+    }
+    return user;
   }
 
   getUserByEmail(email: string) {
@@ -59,10 +63,14 @@ export class UsersService {
     });
   }
 
-  getUserByResetToken(resetToken: string) {
-    return this.userRepository.findOne({
+  async getUserByResetToken(resetToken: string) {
+    const user = await this.userRepository.findOne({
       where: { resetToken },
     });
+    if (!user) {
+      throw new UserNotFoundException();
+    }
+    return user;
   }
 
   async getUserPermissions(userId: string) {
@@ -99,9 +107,6 @@ export class UsersService {
 
   async updateUser(userId: string, updateUserDto: UpdateUserDto) {
     const user = await this.getUserById(userId);
-    if (!user) {
-      throw new UserNotFoundException();
-    }
     const updatedRoles = await this.roleService.getRolesByIds(
       updateUserDto.roleIds,
     );
@@ -116,9 +121,6 @@ export class UsersService {
 
   async deleteUser(userId: string) {
     const user = await this.getUserById(userId);
-    if (!user) {
-      throw new Error(`User with id ${userId} not found!`);
-    }
     return await this.userRepository.remove(user);
   }
 }
