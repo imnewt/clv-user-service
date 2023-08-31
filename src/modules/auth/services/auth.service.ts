@@ -1,23 +1,20 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Client, ClientKafka } from '@nestjs/microservices';
 
 import { UsersService } from '@users/services/users.service';
 import { microserviceConfig } from '@shared/configs/microserviceConfig';
 import { User } from '@shared/entities';
-import { UserNotFoundException } from '@shared/exceptions/userNotFound.exception';
 import { comparePasswords, encodePassword } from '@shared/utilities/bcrypt';
 import { generateRandomPassword } from '@shared/utilities/functions';
 import {
+  ERROR,
+  MODULE,
   SEND_RESET_PASSWORD_MAIL,
   SEND_WELCOME_MAIL,
   USER_ROLE_ID,
 } from '@shared/utilities/constants';
+import { BusinessException } from '@shared/exceptions/business.exception';
 
 @Injectable()
 export class AuthService {
@@ -32,11 +29,19 @@ export class AuthService {
   async login(email: string, password: string) {
     const user = await this.usersService.getUserByEmail(email);
     if (!user) {
-      throw new UserNotFoundException();
+      throw new BusinessException(
+        MODULE.AUTH,
+        [ERROR.USER_NOT_FOUND],
+        HttpStatus.NOT_FOUND,
+      );
     }
     const isMatched = comparePasswords(password, user.password);
     if (!isMatched) {
-      throw new BadRequestException('Wrong password!');
+      throw new BusinessException(
+        MODULE.AUTH,
+        [ERROR.WRONG_PASSWORD],
+        HttpStatus.BAD_REQUEST,
+      );
     }
     const accessToken = await this.generateToken(user);
     const refreshToken = await this.generateRefreshToken(user);
@@ -45,7 +50,11 @@ export class AuthService {
 
   async googleLogin(req) {
     if (!req.user) {
-      throw new BadRequestException('Failed validation from Google!');
+      throw new BusinessException(
+        MODULE.AUTH,
+        [ERROR.FAIL_VALIDATION_FROM_GOOGLE],
+        HttpStatus.BAD_REQUEST,
+      );
     }
     let userForPayload: User;
     const existedUser = await this.usersService.getUserByEmail(req.user.email);
@@ -84,7 +93,11 @@ export class AuthService {
   async forgotPassword(email: string) {
     const user = await this.usersService.getUserByEmail(email);
     if (!user) {
-      throw new UserNotFoundException();
+      throw new BusinessException(
+        MODULE.AUTH,
+        [ERROR.USER_NOT_FOUND],
+        HttpStatus.NOT_FOUND,
+      );
     }
     const resetToken = await this.generateToken(user);
     const expirationTime = new Date();
@@ -100,11 +113,12 @@ export class AuthService {
 
   async resetPassword(resetToken: string, newPassword: string) {
     const user = await this.usersService.getUserByResetToken(resetToken);
-    if (!user) {
-      throw new UserNotFoundException();
-    }
     if (user.resetTokenExpires < new Date()) {
-      throw new BadRequestException('Token has expired');
+      throw new BusinessException(
+        MODULE.AUTH,
+        [ERROR.TOKEN_HAS_EXPIRED],
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     const newHashedPassword = encodePassword(newPassword);
@@ -121,7 +135,11 @@ export class AuthService {
       const payload = await this.jwtService.verifyAsync(token);
       return payload;
     } catch (error) {
-      throw new UnauthorizedException('Invalid Refresh Token!');
+      throw new BusinessException(
+        MODULE.AUTH,
+        [ERROR.INVALID_REFRESH_TOKEN],
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 

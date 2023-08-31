@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, ILike, Repository } from 'typeorm';
 
@@ -10,8 +6,14 @@ import { PermissionsService } from '@permissions/services/permissions.service';
 import { CreateRoleDto } from '../dtos/create-role.dto';
 import { UpdateRoleDto } from '../dtos/update-role.dto';
 import { FilterDto } from '@shared/dtos/filter.dto';
-import { ADMIN_ROLE_ID, USER_ROLE_ID } from '@shared/utilities/constants';
+import {
+  ADMIN_ROLE_ID,
+  ERROR,
+  MODULE,
+  USER_ROLE_ID,
+} from '@shared/utilities/constants';
 import { Role } from '@shared/entities';
+import { BusinessException } from '@shared/exceptions/business.exception';
 
 @Injectable()
 export class RolesService {
@@ -53,26 +55,38 @@ export class RolesService {
     return roles;
   }
 
-  getRoleById(roleId: string) {
-    return this.roleRepository.findOne({
+  async getRoleById(roleId: string) {
+    const role = await this.roleRepository.findOne({
       where: { id: roleId },
       relations: {
         users: true,
         permissions: true,
       },
     });
+    if (!role) {
+      throw new BusinessException(
+        MODULE.ROLES,
+        [ERROR.ROLE_NOT_FOUND],
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    return role;
   }
 
   getRoleByName(roleName: string) {
     return this.roleRepository.findOne({
-      where: { name: roleName },
+      where: { name: ILike(`%${roleName}%`) },
     });
   }
 
   async createRole(dto: CreateRoleDto) {
     const role = await this.getRoleByName(dto.name);
     if (role) {
-      throw new BadRequestException('Role name has been used!');
+      throw new BusinessException(
+        MODULE.ROLES,
+        [ERROR.ROLE_NAME_HAS_BEEN_USED],
+        HttpStatus.BAD_REQUEST,
+      );
     }
     const newRole = this.roleRepository.create(dto);
     const addedPermissions = await this.permissionService.getPermissionsByIds(
@@ -88,12 +102,13 @@ export class RolesService {
 
   async updateRole(roleId: string, updateRoleDto: UpdateRoleDto) {
     if ([ADMIN_ROLE_ID, USER_ROLE_ID].includes(roleId)) {
-      throw new BadRequestException('You can not update this role!');
+      throw new BusinessException(
+        MODULE.ROLES,
+        [ERROR.CAN_NOT_UPDATE_ROLE],
+        HttpStatus.BAD_REQUEST,
+      );
     }
     const role = await this.getRoleById(roleId);
-    if (!role) {
-      throw new NotFoundException(`Role with id ${roleId} not found!`);
-    }
     const updatedPermissions = await this.permissionService.getPermissionsByIds(
       updateRoleDto.permissionIds,
     );
@@ -108,15 +123,18 @@ export class RolesService {
 
   async deleteRole(roleId: string) {
     if ([ADMIN_ROLE_ID, USER_ROLE_ID].includes(roleId)) {
-      throw new BadRequestException('You can not delete this role!');
+      throw new BusinessException(
+        MODULE.ROLES,
+        [ERROR.CAN_NOT_DELETE_ROLE],
+        HttpStatus.BAD_REQUEST,
+      );
     }
     const role = await this.getRoleById(roleId);
-    if (!role) {
-      throw new BadRequestException(`Role with id ${roleId} not found!`);
-    }
     if (role.users.length) {
-      throw new BadRequestException(
-        'This role is being used. Please delete users who have this role first!',
+      throw new BusinessException(
+        MODULE.ROLES,
+        [ERROR.ROLE_IS_BEING_USED],
+        HttpStatus.BAD_REQUEST,
       );
     }
     return await this.roleRepository.remove(role);

@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, Repository } from 'typeorm';
 import { uniqBy } from 'lodash';
@@ -9,8 +9,9 @@ import { UpdateUserDto } from '../dtos/update-user.dto';
 import { SerializedUser } from '../types/user.type';
 import { Permission, User } from '@shared/entities';
 import { encodePassword } from '@shared/utilities/bcrypt';
-import { UserNotFoundException } from '@shared/exceptions/userNotFound.exception';
 import { FilterDto } from '@shared/dtos/filter.dto';
+import { BusinessException } from '@shared/exceptions/business.exception';
+import { ERROR, MODULE } from '@shared/utilities/constants';
 
 @Injectable()
 export class UsersService {
@@ -52,7 +53,11 @@ export class UsersService {
       },
     });
     if (!user) {
-      throw new UserNotFoundException();
+      throw new BusinessException(
+        MODULE.USERS,
+        [ERROR.USER_NOT_FOUND],
+        HttpStatus.NOT_FOUND,
+      );
     }
     return user;
   }
@@ -68,7 +73,11 @@ export class UsersService {
       where: { resetToken },
     });
     if (!user) {
-      throw new UserNotFoundException();
+      throw new BusinessException(
+        MODULE.USERS,
+        [ERROR.USER_NOT_FOUND],
+        HttpStatus.NOT_FOUND,
+      );
     }
     return user;
   }
@@ -87,7 +96,11 @@ export class UsersService {
   async createUser(dto: CreateUserDto) {
     const user = await this.getUserByEmail(dto.email);
     if (user) {
-      throw new BadRequestException('Email has been used!');
+      throw new BusinessException(
+        MODULE.USERS,
+        [ERROR.EMAIL_HAS_BEEN_USED],
+        HttpStatus.BAD_REQUEST,
+      );
     }
     const hashedPassword = encodePassword(dto.password);
     const addedRoles = await this.roleService.getRolesByIds(dto.roleIds);

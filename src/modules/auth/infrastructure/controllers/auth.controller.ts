@@ -7,8 +7,8 @@ import {
   Req,
   Res,
   OnModuleInit,
-  UnauthorizedException,
   Inject,
+  HttpStatus,
 } from '@nestjs/common';
 import { Client, ClientKafka } from '@nestjs/microservices';
 import { AuthGuard } from '@nestjs/passport';
@@ -23,10 +23,12 @@ import { Public } from '@shared/decorators/public.decorator';
 import { microserviceConfig } from '@shared/configs/microserviceConfig';
 import {
   DASHBOARD_URL,
-  INVALID_REFRESH_TOKEN,
   SEND_WELCOME_MAIL,
   SEND_RESET_PASSWORD_MAIL,
+  MODULE,
+  ERROR,
 } from '@shared/utilities/constants';
+import { BusinessException } from '@shared/exceptions/business.exception';
 
 @Controller('auth')
 export class AuthController implements OnModuleInit {
@@ -87,7 +89,11 @@ export class AuthController implements OnModuleInit {
     const { refreshToken } = tokenDto;
     const payload = await this.authService.verifyRefreshToken(refreshToken);
     if (!payload) {
-      throw new UnauthorizedException(INVALID_REFRESH_TOKEN);
+      throw new BusinessException(
+        MODULE.AUTH,
+        [ERROR.INVALID_REFRESH_TOKEN],
+        HttpStatus.BAD_REQUEST,
+      );
     }
     const user = await this.userService.getUserById(payload.sub);
     const accessToken = await this.authService.generateToken(user);

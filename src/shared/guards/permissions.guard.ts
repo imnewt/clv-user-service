@@ -1,9 +1,8 @@
 import {
-  BadRequestException,
   CanActivate,
   ExecutionContext,
+  HttpStatus,
   Injectable,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
@@ -11,7 +10,8 @@ import { Request } from 'express';
 
 import { UsersService } from '@users/services/users.service';
 import { PERMISSION_KEY } from '@shared/decorators/permission.decorator';
-import { jwtConstants } from '@shared/utilities/constants';
+import { ERROR, jwtConstants, MODULE } from '@shared/utilities/constants';
+import { BusinessException } from '@shared/exceptions/business.exception';
 
 @Injectable()
 export class PermissionGuard implements CanActivate {
@@ -33,7 +33,11 @@ export class PermissionGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
     if (!token) {
-      throw new UnauthorizedException();
+      throw new BusinessException(
+        MODULE.AUTH,
+        [ERROR.UNAUTHORIZED],
+        HttpStatus.UNAUTHORIZED,
+      );
     }
     try {
       const payload = await this.jwtService.verifyAsync(token, {
@@ -47,7 +51,11 @@ export class PermissionGuard implements CanActivate {
       );
       return !!hasPermission;
     } catch {
-      throw new BadRequestException();
+      throw new BusinessException(
+        MODULE.AUTH,
+        [ERROR.UNAUTHORIZED],
+        HttpStatus.UNAUTHORIZED,
+      );
     }
   }
 

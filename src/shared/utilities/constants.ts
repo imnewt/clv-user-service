@@ -35,6 +35,30 @@ export enum PERMISSION {
   DELETE_VESSEL = '13',
 }
 
+export enum MODULE {
+  AUTH = 'auth',
+  USERS = 'users',
+  ROLES = 'roles',
+  PERMISSIONS = 'permissions',
+}
+
+export enum ERROR {
+  FAIL_VALIDATION_FROM_GOOGLE = 'Failed validation from Google!',
+  TOKEN_HAS_EXPIRED = 'Token has expired!',
+  INVALID_REFRESH_TOKEN = 'Invalid refresh token!',
+  UNAUTHORIZED = 'Unauthorized!',
+
+  EMAIL_HAS_BEEN_USED = 'Email has been used!',
+  USER_NOT_FOUND = 'User not found!',
+  WRONG_PASSWORD = 'Wrong password!',
+
+  ROLE_NOT_FOUND = 'Role not found!',
+  ROLE_NAME_HAS_BEEN_USED = 'Role name has been used!',
+  CAN_NOT_UPDATE_ROLE = 'You can not update this role!',
+  CAN_NOT_DELETE_ROLE = 'You can not delete this role!',
+  ROLE_IS_BEING_USED = 'This role is being used. Please delete users who have this role first!',
+}
+
 export const jwtConstants = {
   secret:
     'DO NOT USE THIS VALUE. INSTEAD, CREATE A COMPLEX SECRET AND KEEP IT SAFE OUTSIDE OF THE SOURCE CODE.',
