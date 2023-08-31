@@ -15,7 +15,6 @@ import { UsersService } from '@users/services/users.service';
 import { CreateUserDto } from '@users/dtos/create-user.dto';
 import { UpdateUserDto } from '@users/dtos/update-user.dto';
 import { SerializedUser } from '@users/types/user.type';
-import { UserNotFoundException } from '@shared/exceptions/userNotFound.exception';
 import { Permission } from '@shared/decorators/permission.decorator';
 import { PERMISSION } from '@shared/utilities/constants';
 
@@ -39,13 +38,8 @@ export class UsersController {
   @Permission(PERMISSION.READ_USER)
   @Get(':id')
   async getUserById(@Param('id') userId: string) {
-    const data = this.userService.getUserById(userId);
-    const user = await data;
-    if (user) {
-      return new SerializedUser(user);
-    } else {
-      throw new UserNotFoundException();
-    }
+    const user = await this.userService.getUserById(userId);
+    return new SerializedUser(user);
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
