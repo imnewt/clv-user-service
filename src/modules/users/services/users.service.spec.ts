@@ -1,3 +1,4 @@
+import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -9,6 +10,7 @@ import { CreateUserDto } from '../dtos/create-user.dto';
 import { UpdateUserDto } from '../dtos/update-user.dto';
 import { User, Role, Permission } from '@shared/entities';
 import { FilterDto } from '@shared/dtos/filter.dto';
+import { UserNotFoundException } from '@shared/exceptions/userNotFound.exception';
 
 describe('UsersService', () => {
   let usersService: UsersService;
@@ -72,13 +74,13 @@ describe('UsersService', () => {
       expect(result).toBe(user);
     });
 
-    it('should throw an error when user is not found', async () => {
+    it('should throw UserNotFoundException if user does not exist', async () => {
       const userId = 'non_existing_user_id';
       userRepository.findOne = jest.fn().mockResolvedValue(undefined);
 
       const result = usersService.getUserById(userId);
 
-      await expect(result).rejects.toThrowError();
+      await expect(result).rejects.toThrow(UserNotFoundException);
     });
   });
 
@@ -105,13 +107,13 @@ describe('UsersService', () => {
       expect(result).toBe(user);
     });
 
-    it('should throw an error when user is not found', async () => {
+    it('should throw UserNotFoundException if user does not exist', async () => {
       const resetToken = 'non_existing_reset_token';
       userRepository.findOne = jest.fn().mockResolvedValue(undefined);
 
       const result = usersService.getUserByResetToken(resetToken);
 
-      await expect(result).rejects.toThrowError();
+      await expect(result).rejects.toThrow(UserNotFoundException);
     });
   });
 
@@ -137,13 +139,13 @@ describe('UsersService', () => {
       expect(result).toEqual(userPermissions);
     });
 
-    it('should throw an error when user is not found', async () => {
+    it('should throw UserNotFoundException if user does not exist', async () => {
       const userId = 'non_existing_user_id';
-      usersService.getUserById = jest.fn().mockResolvedValue(undefined);
+      userRepository.findOne = jest.fn().mockResolvedValue(undefined);
 
       const result = usersService.getUserPermissions(userId);
 
-      await expect(result).rejects.toThrowError();
+      await expect(result).rejects.toThrow(UserNotFoundException);
     });
   });
 
@@ -165,7 +167,7 @@ describe('UsersService', () => {
       expect(result).toBeInstanceOf(User);
     });
 
-    it('should throw an error when email has been used', async () => {
+    it('should throw BadRequestException if email has been used', async () => {
       const createUserDto: CreateUserDto = {
         email: 'userEmail@gmail.com',
         password: 'newUser',
@@ -176,7 +178,9 @@ describe('UsersService', () => {
 
       const result = usersService.createUser(createUserDto);
 
-      expect(result).rejects.toThrowError();
+      expect(result).rejects.toThrow(
+        new BadRequestException('Email has been used!'),
+      );
     });
   });
 
@@ -208,7 +212,7 @@ describe('UsersService', () => {
       expect(result).toBe(updatedUser);
     });
 
-    it('should throw an error when user is not found', async () => {
+    it('should throw UserNotFoundException if user does not exist', async () => {
       const updateUserDto: UpdateUserDto = {
         id: 'non_existing_user_id',
         userName: 'new_username',
@@ -218,7 +222,7 @@ describe('UsersService', () => {
 
       const result = usersService.updateUser(updateUserDto.id, updateUserDto);
 
-      expect(result).rejects.toThrowError();
+      expect(result).rejects.toThrow(UserNotFoundException);
     });
   });
 
@@ -233,13 +237,13 @@ describe('UsersService', () => {
       await expect(result).resolves.toBeUndefined();
     });
 
-    it('should throw an error when user is not found', async () => {
+    it('should throw UserNotFoundException if user does not exist', async () => {
       const userId = 'non_existing_user_id';
       userRepository.findOne = jest.fn().mockResolvedValue(undefined);
 
       const result = usersService.deleteUser(userId);
 
-      await expect(result).rejects.toThrowError();
+      await expect(result).rejects.toThrow(UserNotFoundException);
     });
   });
 });
