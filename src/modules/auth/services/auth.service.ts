@@ -153,7 +153,7 @@ export class AuthService {
     return await this.jwtService.signAsync(payload);
   };
 
-  private generateRefreshToken = async (user: User): Promise<string> => {
+  generateRefreshToken = async (user: User): Promise<string> => {
     const payload = { userName: user.userName, sub: user.id };
     return await this.jwtService.signAsync(payload, {
       expiresIn: '7d',
