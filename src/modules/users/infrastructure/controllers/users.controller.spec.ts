@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
+import { HttpStatus } from '@nestjs/common';
 import { Repository } from 'typeorm';
 
 import { UsersController } from './users.controller';
@@ -14,7 +15,6 @@ import { User, Role, Permission } from '@shared/entities';
 import { jwtConfig } from '@shared/configs/jwtConfig';
 import { BusinessException } from '@shared/exceptions/business.exception';
 import { ERROR, MODULE } from '@shared/utilities/constants';
-import { HttpStatus } from '@nestjs/common';
 
 describe('UsersController', () => {
   let usersController: UsersController;
@@ -82,7 +82,7 @@ describe('UsersController', () => {
       expect(result).toStrictEqual(user);
     });
 
-    it('should throw UserNotFoundException if user does not exist', async () => {
+    it('should throw exception if user does not exist', async () => {
       const userId = 'non_existing_user_id';
       userRepository.findOne = jest.fn().mockResolvedValue(undefined);
 
@@ -120,7 +120,7 @@ describe('UsersController', () => {
       expect(result).toEqual(userPermissions);
     });
 
-    it('should throw UserNotFoundException if user does not exist', async () => {
+    it('should throw exception if user does not exist', async () => {
       const userId = 'non_existing_user_id';
       userRepository.findOne = jest.fn().mockResolvedValue(undefined);
 
@@ -154,7 +154,7 @@ describe('UsersController', () => {
       expect(result).toBeInstanceOf(User);
     });
 
-    it('should throw BadRequestException if email has been used', async () => {
+    it('should throw exception if email has been used', async () => {
       const createUserDto: CreateUserDto = {
         email: 'userEmail@gmail.com',
         password: 'newUser',
@@ -192,7 +192,7 @@ describe('UsersController', () => {
       expect(result).toBe(updatedUser);
     });
 
-    it('should throw UserNotFoundException if user does not exist', async () => {
+    it('should throw exception if user does not exist', async () => {
       const updateUserDto: UpdateUserDto = {
         id: 'non_existing_user_id',
         userName: 'new_username',
@@ -226,7 +226,7 @@ describe('UsersController', () => {
       await expect(result).resolves.toBeUndefined();
     });
 
-    it('should throw UserNotFoundException if user does not exist', async () => {
+    it('should throw exception if user does not exist', async () => {
       const userId = 'non_existing_user_id';
       userRepository.findOne = jest.fn().mockResolvedValue(undefined);
 

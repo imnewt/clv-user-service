@@ -75,7 +75,7 @@ describe('UsersService', () => {
       expect(result).toBe(user);
     });
 
-    it('should throw UserNotFoundException if user does not exist', async () => {
+    it('should throw exception if user does not exist', async () => {
       const userId = 'non_existing_user_id';
       userRepository.findOne = jest.fn().mockResolvedValue(undefined);
 
@@ -114,7 +114,7 @@ describe('UsersService', () => {
       expect(result).toBe(user);
     });
 
-    it('should throw UserNotFoundException if user does not exist', async () => {
+    it('should throw exception if user does not exist', async () => {
       const resetToken = 'non_existing_reset_token';
       userRepository.findOne = jest.fn().mockResolvedValue(undefined);
 
@@ -152,7 +152,7 @@ describe('UsersService', () => {
       expect(result).toEqual(userPermissions);
     });
 
-    it('should throw UserNotFoundException if user does not exist', async () => {
+    it('should throw exception if user does not exist', async () => {
       const userId = 'non_existing_user_id';
       userRepository.findOne = jest.fn().mockResolvedValue(undefined);
 
@@ -186,7 +186,7 @@ describe('UsersService', () => {
       expect(result).toBeInstanceOf(User);
     });
 
-    it('should throw BadRequestException if email has been used', async () => {
+    it('should throw exception if email has been used', async () => {
       const createUserDto: CreateUserDto = {
         email: 'userEmail@gmail.com',
         password: 'newUser',
@@ -235,7 +235,7 @@ describe('UsersService', () => {
       expect(result).toBe(updatedUser);
     });
 
-    it('should throw UserNotFoundException if user does not exist', async () => {
+    it('should throw exception if user does not exist', async () => {
       const updateUserDto: UpdateUserDto = {
         id: 'non_existing_user_id',
         userName: 'new_username',
@@ -266,7 +266,7 @@ describe('UsersService', () => {
       await expect(result).resolves.toBeUndefined();
     });
 
-    it('should throw UserNotFoundException if user does not exist', async () => {
+    it('should throw exception if user does not exist', async () => {
       const userId = 'non_existing_user_id';
       userRepository.findOne = jest.fn().mockResolvedValue(undefined);
 
