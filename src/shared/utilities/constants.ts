@@ -36,6 +36,7 @@ export enum PERMISSION {
 }
 
 export enum MODULE {
+  GENERIC = 'generic',
   AUTH = 'auth',
   USERS = 'users',
   ROLES = 'roles',
@@ -57,6 +58,8 @@ export enum ERROR {
   CAN_NOT_UPDATE_ROLE = 'You can not update this role!',
   CAN_NOT_DELETE_ROLE = 'You can not delete this role!',
   ROLE_IS_BEING_USED = 'This role is being used. Please delete users who have this role first!',
+
+  NOT_HAVE_PERMISSION = "You don't have permission to perform this action!",
 }
 
 export const jwtConstants = {

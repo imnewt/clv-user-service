@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -7,7 +6,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { RolesModule } from '@roles/roles.module';
 import { GoogleStrategy } from './infrastructure/strategies/google.strategy';
 import { AuthController } from './infrastructure/controllers/auth.controller';
-import { AuthGuard } from './infrastructure/guards/auth.guard';
 import { AuthService } from './services/auth.service';
 import { UsersModule } from '@users/users.module';
 import { UsersService } from '@users/services/users.service';
@@ -29,10 +27,6 @@ import { User } from '@shared/entities';
     {
       provide: 'USER_SERVICE',
       useClass: UsersService,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard,
     },
   ],
   controllers: [AuthController],
