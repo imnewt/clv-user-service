@@ -5,14 +5,21 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-
-import { PERMISSION_KEY } from '@shared/decorators/permission.decorator';
-import { ERROR, MODULE } from '@shared/utilities/constants';
+import { JwtService } from '@nestjs/jwt';
 import { BusinessException } from '@shared/exceptions/business.exception';
+import { Request } from 'express';
+
+import { UsersService } from 'src/modules/users/services/users.service';
+import { PERMISSION_KEY } from 'src/shared/decorators/permission.decorator';
+import { ERROR, jwtConstants, MODULE } from 'src/shared/utilities/constants';
 
 @Injectable()
 export class PermissionGuard implements CanActivate {
-  constructor(private readonly reflector: Reflector) {}
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly reflector: Reflector,
+    private readonly userService: UsersService,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const neededPermission = this.reflector.get<string>(
@@ -24,13 +31,23 @@ export class PermissionGuard implements CanActivate {
 
     try {
       const request = context.switchToHttp().getRequest();
-      const userPermissions =
-        JSON.parse(request.headers['user-permissions']) || [];
-
+      const token = this.extractTokenFromHeader(request);
+      if (!token) {
+        throw new BusinessException(
+          MODULE.GENERIC,
+          [ERROR.UNAUTHORIZED],
+          HttpStatus.UNAUTHORIZED,
+        );
+      }
+      const payload = await this.jwtService.verifyAsync(token, {
+        secret: jwtConstants.secret,
+      });
+      const userPermissions = await this.userService.getUserPermissions(
+        payload.sub,
+      );
       const hasPermission = userPermissions.find(
         (permission) => permission.id === neededPermission,
       );
-
       if (!hasPermission) {
         throw new BusinessException(
           MODULE.GENERIC,
@@ -46,5 +63,10 @@ export class PermissionGuard implements CanActivate {
       );
     }
     return true;
+  }
+
+  private extractTokenFromHeader(request: Request): string | undefined {
+    const [type, token] = request.headers.authorization?.split(' ') ?? [];
+    return type === 'Bearer' ? token : undefined;
   }
 }
