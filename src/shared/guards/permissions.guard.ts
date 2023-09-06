@@ -9,9 +9,9 @@ import { JwtService } from '@nestjs/jwt';
 import { BusinessException } from '@shared/exceptions/business.exception';
 import { Request } from 'express';
 
-import { UsersService } from 'src/modules/users/services/users.service';
-import { PERMISSION_KEY } from 'src/shared/decorators/permission.decorator';
-import { ERROR, jwtConstants, MODULE } from 'src/shared/utilities/constants';
+import { UsersService } from '@users/services/users.service';
+import { PERMISSION_KEY } from '@shared/decorators/permission.decorator';
+import { ERROR, jwtConstants, MODULE } from '@shared/utilities/constants';
 
 @Injectable()
 export class PermissionGuard implements CanActivate {
