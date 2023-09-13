@@ -9,22 +9,19 @@
     "target": "ES2021",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": ".",
+    "baseUrl": "./src",
     "paths": {
-      "@auth/*": [
-        "src/modules/auth/*"
+      "@application/*": [
+        "application/*"
       ],
-      "@users/*": [
-        "src/modules/users/*"
+      "@domain/*": [
+        "domain/*"
       ],
-      "@roles/*": [
-        "src/modules/roles/*"
+      "@infrastructure/*": [
+        "infrastructure/*"
       ],
-      "@permissions/*": [
-        "src/modules/permissions/*"
-      ],
-      "@shared/*": [
-        "src/shared/*"
+      "@src/*": [
+        "*"
       ],
     },
     "incremental": true,

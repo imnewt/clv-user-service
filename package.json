@@ -13,11 +13,10 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "jest",
+    "test": "jest --detectOpenHandles",
     "test:watch": "jest --watch",
-    "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:cov": "jest --coverage --detectOpenHandles",
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -86,17 +85,14 @@
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
-    "collectCoverageFrom": [
-      "**/*.(t|j)s"
-    ],
+    "collectCoverageFrom": ["src/**/*.ts"],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
     "moduleNameMapper": {
-      "^@auth/(.*)$": "<rootDir>/src/modules/auth/$1",
-      "^@users/(.*)$": "<rootDir>/src/modules/users/$1",
-      "^@roles/(.*)$": "<rootDir>/src/modules/roles/$1",
-      "^@permissions/(.*)$": "<rootDir>/src/modules/permissions/$1",
-      "^@shared/(.*)$": "<rootDir>/src/shared/$1"
+      "^@application/(.*)$": "<rootDir>/src/application/$1",
+      "^@domain/(.*)$": "<rootDir>/src/domain/$1",
+      "^@infrastructure/(.*)$": "<rootDir>/src/infrastructure/$1",
+      "^@src/(.*)$": "<rootDir>/src/$1"
     }
   }
 }
