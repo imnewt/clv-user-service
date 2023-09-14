@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
 
 import {
   AuthController,
@@ -14,6 +15,7 @@ import {
   PermissionService,
 } from '@domain/use-cases/permission';
 import { DomainModule } from '@domain/domain.module';
+import { AuthGuard } from '@domain/guards/auth.guard';
 
 @Module({
   imports: [DomainModule],
@@ -24,6 +26,10 @@ import { DomainModule } from '@domain/domain.module';
     PermissionController,
   ],
   providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
     {
       provide: IAuthService,
       useClass: AuthService,
