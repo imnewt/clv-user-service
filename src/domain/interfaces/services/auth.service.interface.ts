@@ -7,6 +7,7 @@ export interface IAuthService {
   googleLogin(googleRequest: any): Promise<AuthResponse>;
   verifyRefreshToken(refreshToken: string): Promise<AuthPayload>;
   generateToken(user: User): Promise<string>;
+  generateRefreshToken(user: User): Promise<string>;
   forgotPassword(email: string): Promise<void>;
   resetPassword(resetToken: string, newPassword: string): Promise<void>;
 }

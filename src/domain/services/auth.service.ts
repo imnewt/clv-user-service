@@ -143,7 +143,7 @@ export class AuthService implements IAuthService {
         refreshToken,
       );
       return payload;
-    } catch (error) {
+    } catch {
       throw new BusinessException(
         MODULE.AUTH,
         [ERROR.INVALID_REFRESH_TOKEN],

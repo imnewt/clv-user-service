@@ -98,13 +98,13 @@ export class RoleService implements IRoleService {
       );
     }
     const role = await this.getRoleById(roleId);
-    if (role.users.length) {
+    if (role && role.users.length) {
       throw new BusinessException(
         MODULE.ROLES,
         [ERROR.ROLE_IS_BEING_USED],
         HttpStatus.BAD_REQUEST,
       );
     }
-    await this.roleRepository.deleteRole(role);
+    return await this.roleRepository.deleteRole(role);
   }
 }
