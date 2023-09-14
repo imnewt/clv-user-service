@@ -14,7 +14,7 @@ import {
 import { IRoleRepository } from '@domain/use-cases/role';
 import { BusinessException } from '@domain/exceptions/business.exception';
 import { ERROR, MODULE } from '@domain/utilities/constants';
-import { jwtConfig } from '@domain/configs/jwtConfig';
+import { jwtConfig } from '@domain/configs/jwt.config';
 import { encodePassword } from '@domain/utilities/bcrypt';
 import {
   TypeOrmRoleRepository,

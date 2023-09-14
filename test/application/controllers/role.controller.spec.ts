@@ -7,7 +7,7 @@ import { IUserService, UserService } from '@domain/use-cases/user';
 import { IRoleService, RoleService } from '@domain/use-cases/role';
 import { IPermissionRepository } from '@domain/use-cases/permission';
 import { CreateRoleDto, UpdateRoleDto } from '@domain/dtos';
-import { jwtConfig } from '@domain/configs/jwtConfig';
+import { jwtConfig } from '@domain/configs/jwt.config';
 import { BusinessException } from '@domain/exceptions/business.exception';
 import { ERROR, MODULE } from '@domain/utilities/constants';
 import { User, Role } from '@infrastructure/database/entities';

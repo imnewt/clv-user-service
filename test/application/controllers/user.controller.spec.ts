@@ -10,7 +10,7 @@ import {
 } from '@domain/use-cases/user';
 import { IRoleRepository } from '@domain/use-cases/role';
 import { CreateUserDto, UpdateUserDto } from '@domain/dtos';
-import { jwtConfig } from '@domain/configs/jwtConfig';
+import { jwtConfig } from '@domain/configs/jwt.config';
 import { BusinessException } from '@domain/exceptions/business.exception';
 import { ERROR, MODULE } from '@domain/utilities/constants';
 import { User, Permission } from '@infrastructure/database/entities';

@@ -8,7 +8,7 @@ import { IAuthService } from './auth.service.interface';
 import { IUserService, IUserRepository } from '../user';
 import { BusinessException } from '@domain/exceptions/business.exception';
 import { comparePasswords, encodePassword } from '@domain/utilities/bcrypt';
-import { microserviceConfig } from '@domain/configs/microserviceConfig';
+import { microserviceConfig } from '@domain/configs/microservice.config';
 import { generateRandomPassword } from '@domain/utilities/functions';
 import {
   ERROR,

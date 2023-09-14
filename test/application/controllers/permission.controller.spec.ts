@@ -7,7 +7,7 @@ import {
   IPermissionService,
   PermissionService,
 } from '@domain/use-cases/permission';
-import { jwtConfig } from '@domain/configs/jwtConfig';
+import { jwtConfig } from '@domain/configs/jwt.config';
 import { Permission } from '@infrastructure/database/entities';
 
 describe('PermissionController', () => {
