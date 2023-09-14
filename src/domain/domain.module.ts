@@ -3,16 +3,14 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 
 import { jwtConfig } from './configs/jwtConfig';
-import { GoogleStrategy } from './strategies/google.strategy';
-import { TypeOrmPersistenceModule } from '@infrastructure/persistence/typeorm/typeorm.module';
+import { InfrastructureModule } from '@infrastructure/infrastructure.module';
 
 @Module({
   imports: [
     JwtModule.register(jwtConfig),
     PassportModule.register({ defaultStrategy: 'google' }),
-    TypeOrmPersistenceModule,
+    InfrastructureModule,
   ],
-  providers: [GoogleStrategy],
-  exports: [TypeOrmPersistenceModule],
+  exports: [InfrastructureModule],
 })
 export class DomainModule {}

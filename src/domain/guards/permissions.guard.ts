@@ -10,7 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 
 import { BusinessException } from '../exceptions/business.exception';
-import { IUserService } from '../interfaces/services';
+import { IUserService } from '../use-cases/user';
 import { PERMISSION_KEY } from '../decorators/permission.decorator';
 import { ERROR, jwtConstants, MODULE } from '../utilities/constants';
 

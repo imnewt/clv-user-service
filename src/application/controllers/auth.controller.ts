@@ -14,7 +14,8 @@ import { Client, ClientKafka } from '@nestjs/microservices';
 import { Request, Response } from 'express';
 
 import { LoginDto, RegisterDto, TokenDto } from '@domain/dtos';
-import { IAuthService, IUserService } from '@domain/interfaces/services';
+import { IAuthService } from '@domain/use-cases/auth';
+import { IUserService } from '@domain/use-cases/user';
 import { Public } from '@domain/decorators/public.decorator';
 import { microserviceConfig } from '@domain/configs/microserviceConfig';
 import { BusinessException } from '@domain/exceptions/business.exception';

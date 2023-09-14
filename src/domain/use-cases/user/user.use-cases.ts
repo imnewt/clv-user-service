@@ -1,13 +1,14 @@
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { uniqBy } from 'lodash';
 
-import { CreateUserDto, UpdateUserDto, FilterDto } from '../dtos';
-import { User, Permission } from '../models';
-import { IUserService } from '../interfaces/services';
-import { IUserRepository, IRoleRepository } from '../interfaces/repositories';
-import { BusinessException } from '../exceptions/business.exception';
-import { ERROR, MODULE } from '../utilities/constants';
-import { encodePassword } from '../utilities/bcrypt';
+import { IUserService } from './user.service.interface';
+import { IUserRepository } from './user.repository.interface';
+import { IRoleRepository } from '../role';
+import { CreateUserDto, UpdateUserDto, FilterDto } from '@domain/dtos';
+import { User, Permission } from '@domain/models';
+import { BusinessException } from '@domain/exceptions/business.exception';
+import { ERROR, MODULE } from '@domain/utilities/constants';
+import { encodePassword } from '@domain/utilities/bcrypt';
 
 @Injectable()
 export class UserService implements IUserService {

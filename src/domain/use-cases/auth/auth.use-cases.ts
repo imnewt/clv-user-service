@@ -2,21 +2,21 @@ import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { Client, ClientKafka } from '@nestjs/microservices';
 import { JwtService } from '@nestjs/jwt';
 
-import { CreateUserDto, LoginDto, RegisterDto } from '../dtos';
-import { User, AuthPayload, AuthResponse } from '../models';
-import { IAuthService, IUserService } from '../interfaces/services';
-import { IUserRepository } from '../interfaces/repositories';
-import { BusinessException } from '../exceptions/business.exception';
-import { comparePasswords, encodePassword } from '../utilities/bcrypt';
-import { microserviceConfig } from '../configs/microserviceConfig';
-import { generateRandomPassword } from '../utilities/functions';
+import { CreateUserDto, LoginDto, RegisterDto } from '@domain/dtos';
+import { User, AuthPayload, AuthResponse } from '@domain/models';
+import { IAuthService } from './auth.service.interface';
+import { IUserService, IUserRepository } from '../user';
+import { BusinessException } from '@domain/exceptions/business.exception';
+import { comparePasswords, encodePassword } from '@domain/utilities/bcrypt';
+import { microserviceConfig } from '@domain/configs/microserviceConfig';
+import { generateRandomPassword } from '@domain/utilities/functions';
 import {
   ERROR,
   MODULE,
   SEND_RESET_PASSWORD_MAIL,
   SEND_WELCOME_MAIL,
   USER_ROLE_ID,
-} from '../utilities/constants';
+} from '@domain/utilities/constants';
 
 @Injectable()
 export class AuthService implements IAuthService {

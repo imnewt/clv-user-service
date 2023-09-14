@@ -1,6 +1,6 @@
 import { Controller, Get, Inject, Query } from '@nestjs/common';
 
-import { IPermissionService } from '@domain/interfaces/services';
+import { IPermissionService } from '@domain/use-cases/permission';
 import { Permission } from '@domain/decorators/permission.decorator';
 import { PERMISSION } from '@domain/utilities/constants';
 

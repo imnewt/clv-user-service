@@ -1,19 +1,17 @@
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 
-import { CreateRoleDto, UpdateRoleDto, FilterDto } from '../dtos';
-import { Role } from '../models';
-import { IRoleService } from '../interfaces/services';
-import {
-  IRoleRepository,
-  IPermissionRepository,
-} from '../interfaces/repositories';
-import { BusinessException } from '../exceptions/business.exception';
+import { IRoleService } from './role.service.interface';
+import { IRoleRepository } from './role.repository.interface';
+import { IPermissionRepository } from '../permission';
+import { CreateRoleDto, UpdateRoleDto, FilterDto } from '@domain/dtos';
+import { Role } from '@domain/models';
+import { BusinessException } from '@domain/exceptions/business.exception';
 import {
   ADMIN_ROLE_ID,
   ERROR,
   MODULE,
   USER_ROLE_ID,
-} from '../utilities/constants';
+} from '@domain/utilities/constants';
 
 @Injectable()
 export class RoleService implements IRoleService {

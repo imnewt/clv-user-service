@@ -3,15 +3,15 @@ import { JwtModule } from '@nestjs/jwt';
 import { HttpStatus } from '@nestjs/common';
 
 import { RoleController } from '@application/controllers';
-import { RoleService, UserService } from '@domain/services';
-import { IRoleService, IUserService } from '@domain/interfaces/services';
+import { IUserService, UserService } from '@domain/use-cases/user';
+import { IRoleService, RoleService } from '@domain/use-cases/role';
+import { IPermissionRepository } from '@domain/use-cases/permission';
 import { CreateRoleDto, UpdateRoleDto } from '@domain/dtos';
 import { jwtConfig } from '@domain/configs/jwtConfig';
 import { BusinessException } from '@domain/exceptions/business.exception';
 import { ERROR, MODULE } from '@domain/utilities/constants';
-import { IPermissionRepository } from '@domain/interfaces/repositories';
-import { User, Role } from '@infrastructure/persistence/typeorm/entities';
-import { TypeOrmPermissionRepository } from '@infrastructure/persistence/typeorm/repositories';
+import { User, Role } from '@infrastructure/database/entities';
+import { TypeOrmPermissionRepository } from '@infrastructure/database/repositories';
 
 describe('RoleController', () => {
   let roleController: RoleController;

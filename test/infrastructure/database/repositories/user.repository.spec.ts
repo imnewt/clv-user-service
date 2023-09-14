@@ -3,8 +3,8 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { FilterDto } from '@domain/dtos';
-import { TypeOrmUserRepository } from '@infrastructure/persistence/typeorm/repositories/user.repository';
-import { User } from '@infrastructure/persistence/typeorm/entities/user.entity';
+import { TypeOrmUserRepository } from '@infrastructure/database/repositories/user.repository';
+import { User } from '@infrastructure/database/entities/user.entity';
 
 describe('UserRepository', () => {
   let userRepository: TypeOrmUserRepository;

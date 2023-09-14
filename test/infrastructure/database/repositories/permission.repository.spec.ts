@@ -3,8 +3,8 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 
 import { FilterDto } from '@domain/dtos';
-import { TypeOrmPermissionRepository } from '@infrastructure/persistence/typeorm/repositories/permission.repository';
-import { Permission } from '@infrastructure/persistence/typeorm/entities/permission.entity';
+import { TypeOrmPermissionRepository } from '@infrastructure/database/repositories/permission.repository';
+import { Permission } from '@infrastructure/database/entities/permission.entity';
 
 describe('PermissionRepository', () => {
   let permissionRepository: TypeOrmPermissionRepository;

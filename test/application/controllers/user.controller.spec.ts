@@ -3,21 +3,21 @@ import { JwtModule } from '@nestjs/jwt';
 import { HttpStatus } from '@nestjs/common';
 
 import { UserController } from '@application/controllers';
-import { UserService } from '@domain/services';
-import { IUserService } from '@domain/interfaces/services';
+import {
+  IUserService,
+  IUserRepository,
+  UserService,
+} from '@domain/use-cases/user';
+import { IRoleRepository } from '@domain/use-cases/role';
 import { CreateUserDto, UpdateUserDto } from '@domain/dtos';
 import { jwtConfig } from '@domain/configs/jwtConfig';
 import { BusinessException } from '@domain/exceptions/business.exception';
 import { ERROR, MODULE } from '@domain/utilities/constants';
-import {
-  IUserRepository,
-  IRoleRepository,
-} from '@domain/interfaces/repositories';
-import { User, Permission } from '@infrastructure/persistence/typeorm/entities';
+import { User, Permission } from '@infrastructure/database/entities';
 import {
   TypeOrmRoleRepository,
   TypeOrmUserRepository,
-} from '@infrastructure/persistence/typeorm/repositories';
+} from '@infrastructure/database/repositories';
 
 describe('UserController', () => {
   let userController: UserController;

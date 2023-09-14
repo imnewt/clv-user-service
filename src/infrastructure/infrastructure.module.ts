@@ -1,21 +1,26 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { databaseConfig } from './database/configs/database.config';
+import { IUserRepository } from '@domain/use-cases/user';
+import { IRoleRepository } from '@domain/use-cases/role';
+import { IPermissionRepository } from '@domain/use-cases/permission';
 import {
-  IUserRepository,
-  IRoleRepository,
-  IPermissionRepository,
-} from '@domain/interfaces/repositories';
-import { User, Role, Permission } from './entities';
-import {
-  TypeOrmUserRepository,
-  TypeOrmRoleRepository,
   TypeOrmPermissionRepository,
-} from './repositories';
+  TypeOrmRoleRepository,
+  TypeOrmUserRepository,
+} from './database/repositories';
+
+import { Permission, Role, User } from './database/entities';
+import { GoogleStrategy } from './auth/google.strategy';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Role, Permission])],
+  imports: [
+    TypeOrmModule.forRoot(databaseConfig),
+    TypeOrmModule.forFeature([User, Role, Permission]),
+  ],
   providers: [
+    GoogleStrategy,
     {
       provide: IUserRepository,
       useClass: TypeOrmUserRepository,
@@ -44,4 +49,4 @@ import {
     },
   ],
 })
-export class TypeOrmPersistenceModule {}
+export class InfrastructureModule {}

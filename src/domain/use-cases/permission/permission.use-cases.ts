@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { Permission } from '../models';
-import { IPermissionService } from '../interfaces/services';
-import { IPermissionRepository } from '../interfaces/repositories';
-import { FilterDto } from '../dtos';
+import { IPermissionService } from './permission.service.interface';
+import { IPermissionRepository } from './permission.repository.interface';
+import { Permission } from '@domain/models';
+import { FilterDto } from '@domain/dtos';
 
 @Injectable()
 export class PermissionService implements IPermissionService {

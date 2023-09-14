@@ -5,25 +5,22 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
 
 import { AuthController } from '@application/controllers';
-import { AuthService, UserService } from '@domain/services';
-import { IAuthService, IUserService } from '@domain/interfaces/services';
+import { IAuthService, AuthService } from '@domain/use-cases/auth';
+import {
+  IUserService,
+  IUserRepository,
+  UserService,
+} from '@domain/use-cases/user';
+import { IRoleRepository } from '@domain/use-cases/role';
 import { BusinessException } from '@domain/exceptions/business.exception';
 import { ERROR, MODULE } from '@domain/utilities/constants';
 import { jwtConfig } from '@domain/configs/jwtConfig';
-import {
-  IRoleRepository,
-  IUserRepository,
-} from '@domain/interfaces/repositories';
 import { encodePassword } from '@domain/utilities/bcrypt';
 import {
   TypeOrmRoleRepository,
   TypeOrmUserRepository,
-} from '@infrastructure/persistence/typeorm/repositories';
-import {
-  Permission,
-  Role,
-  User,
-} from '@infrastructure/persistence/typeorm/entities';
+} from '@infrastructure/database/repositories';
+import { Permission, Role, User } from '@infrastructure/database/entities';
 
 describe('AuthController', () => {
   let authController: AuthController;

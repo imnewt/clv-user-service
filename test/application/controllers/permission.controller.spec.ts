@@ -2,10 +2,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { JwtModule } from '@nestjs/jwt';
 
 import { PermissionController } from '@application/controllers';
-import { PermissionService, UserService } from '@domain/services';
-import { IPermissionService, IUserService } from '@domain/interfaces/services';
+import { IUserService, UserService } from '@domain/use-cases/user';
+import {
+  IPermissionService,
+  PermissionService,
+} from '@domain/use-cases/permission';
 import { jwtConfig } from '@domain/configs/jwtConfig';
-import { Permission } from '@infrastructure/persistence/typeorm/entities';
+import { Permission } from '@infrastructure/database/entities';
 
 describe('PermissionController', () => {
   let permissionController: PermissionController;

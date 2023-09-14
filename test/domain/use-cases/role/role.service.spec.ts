@@ -2,18 +2,15 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { HttpStatus } from '@nestjs/common';
 
 import { CreateRoleDto, UpdateRoleDto } from '@domain/dtos';
-import {
-  IPermissionRepository,
-  IRoleRepository,
-} from '@domain/interfaces/repositories';
 import { BusinessException } from '@domain/exceptions/business.exception';
 import { ADMIN_ROLE_ID, ERROR, MODULE } from '@domain/utilities/constants';
-import { RoleService } from '@domain/services';
-import { Role, User } from '@infrastructure/persistence/typeorm/entities';
+import { RoleService, IRoleRepository } from '@domain/use-cases/role';
+import { IPermissionRepository } from '@domain/use-cases/permission';
+import { Role, User } from '@infrastructure/database/entities';
 import {
   TypeOrmPermissionRepository,
   TypeOrmRoleRepository,
-} from '@infrastructure/persistence/typeorm/repositories';
+} from '@infrastructure/database/repositories';
 
 describe('RoleService', () => {
   let roleService: RoleService;

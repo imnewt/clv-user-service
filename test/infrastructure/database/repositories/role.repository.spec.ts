@@ -3,8 +3,8 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { ILike, In, Repository } from 'typeorm';
 
 import { FilterDto } from '@domain/dtos';
-import { TypeOrmRoleRepository } from '@infrastructure/persistence/typeorm/repositories/role.repository';
-import { Role } from '@infrastructure/persistence/typeorm/entities/role.entity';
+import { TypeOrmRoleRepository } from '@infrastructure/database/repositories/role.repository';
+import { Role } from '@infrastructure/database/entities/role.entity';
 
 describe('RoleRepository', () => {
   let roleRepository: TypeOrmRoleRepository;

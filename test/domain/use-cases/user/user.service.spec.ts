@@ -2,18 +2,15 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { HttpStatus } from '@nestjs/common';
 
 import { CreateUserDto, UpdateUserDto } from '@domain/dtos';
-import {
-  IRoleRepository,
-  IUserRepository,
-} from '@domain/interfaces/repositories';
 import { BusinessException } from '@domain/exceptions/business.exception';
 import { ERROR, MODULE } from '@domain/utilities/constants';
-import { UserService } from '@domain/services';
-import { Permission, User } from '@infrastructure/persistence/typeorm/entities';
+import { UserService, IUserRepository } from '@domain/use-cases/user';
+import { IRoleRepository } from '@domain/use-cases/role';
+import { Permission, User } from '@infrastructure/database/entities';
 import {
   TypeOrmRoleRepository,
   TypeOrmUserRepository,
-} from '@infrastructure/persistence/typeorm/repositories';
+} from '@infrastructure/database/repositories';
 
 describe('UserService', () => {
   let userService: UserService;

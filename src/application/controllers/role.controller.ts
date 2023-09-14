@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 
 import { CreateRoleDto, UpdateRoleDto } from '@domain/dtos';
-import { IRoleService } from '@domain/interfaces/services';
+import { IRoleService } from '@domain/use-cases/role';
 import { Permission } from '@domain/decorators/permission.decorator';
 import { PERMISSION } from '@domain/utilities/constants';
 

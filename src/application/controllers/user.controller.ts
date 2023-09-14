@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 
 import { CreateUserDto, UpdateUserDto } from '@domain/dtos';
-import { IUserService } from '@domain/interfaces/services';
+import { IUserService } from '@domain/use-cases/user';
 import { Permission } from '@domain/decorators/permission.decorator';
 import { PERMISSION } from '@domain/utilities/constants';
 

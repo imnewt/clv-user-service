@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { NestExpressApplication } from '@nestjs/platform-express';
 
 import { AppModule } from '@src/app.module';
-import { USER_SERVICE_PORT } from '@domain/utilities/constants';
 
 describe('AppModule', () => {
   let app: NestExpressApplication;
@@ -13,7 +12,7 @@ describe('AppModule', () => {
     }).compile();
 
     app = module.createNestApplication();
-    await app.listen(USER_SERVICE_PORT);
+    await app.init();
   });
 
   afterAll(async () => {

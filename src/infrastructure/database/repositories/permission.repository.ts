@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, ILike, In } from 'typeorm';
 
 import { Permission } from '../entities';
-import { IPermissionRepository } from '@domain/interfaces/repositories';
+import { IPermissionRepository } from '@domain/use-cases/permission';
 import { FilterDto } from '@domain/dtos';
 
 @Injectable()

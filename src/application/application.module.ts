@@ -6,18 +6,13 @@ import {
   RoleController,
   PermissionController,
 } from './controllers';
+import { IAuthService, AuthService } from '@domain/use-cases/auth';
+import { IUserService, UserService } from '@domain/use-cases/user';
+import { IRoleService, RoleService } from '@domain/use-cases/role';
 import {
-  IAuthService,
-  IUserService,
-  IRoleService,
   IPermissionService,
-} from '@domain/interfaces/services';
-import {
-  AuthService,
-  UserService,
-  RoleService,
   PermissionService,
-} from '@domain/services';
+} from '@domain/use-cases/permission';
 import { DomainModule } from '@domain/domain.module';
 
 @Module({
