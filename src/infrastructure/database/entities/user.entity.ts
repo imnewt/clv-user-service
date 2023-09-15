@@ -14,7 +14,6 @@ export class User extends Base {
   @PrimaryGeneratedColumn({
     type: 'bigint',
   })
-  // @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({

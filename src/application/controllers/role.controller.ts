@@ -46,7 +46,7 @@ export class RoleController {
   }
 
   @Permission(PERMISSION.CREATE_ROLE)
-  @Post('/create')
+  @Post()
   createRole(@Body() createRoleDto: CreateRoleDto) {
     return this.roleService.createRole(createRoleDto);
   }

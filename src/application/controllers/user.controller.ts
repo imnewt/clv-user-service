@@ -58,7 +58,7 @@ export class UserController {
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Permission(PERMISSION.CREATE_USER)
-  @Post('/create')
+  @Post()
   createUser(@Body() createUserDto: CreateUserDto) {
     return this.userService.createUser(createUserDto);
   }
