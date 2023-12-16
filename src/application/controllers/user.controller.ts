@@ -24,7 +24,7 @@ export class UserController {
   ) {}
 
   @UseInterceptors(ClassSerializerInterceptor)
-  @Permission(PERMISSION.READ_USER)
+  // @Permission(PERMISSION.READ_USER)
   @Get()
   getUsers(
     @Query()
@@ -57,7 +57,7 @@ export class UserController {
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
-  @Permission(PERMISSION.CREATE_USER)
+  // @Permission(PERMISSION.CREATE_USER)
   @Post()
   createUser(@Body() createUserDto: CreateUserDto) {
     return this.userService.createUser(createUserDto);

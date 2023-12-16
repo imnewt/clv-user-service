@@ -26,10 +26,10 @@ import { AuthGuard } from '@domain/guards/auth.guard';
     PermissionController,
   ],
   providers: [
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: AuthGuard,
+    // },
     {
       provide: IAuthService,
       useClass: AuthService,

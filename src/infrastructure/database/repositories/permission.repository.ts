@@ -16,7 +16,7 @@ export class TypeOrmPermissionRepository implements IPermissionRepository {
   async getPermissions(
     filter: FilterDto,
   ): Promise<{ permissions: Permission[]; total: number }> {
-    const { searchTerm, pageNumber, pageSize } = filter;
+    const { searchTerm = '', pageNumber = 1, pageSize = 10 } = filter;
     const [permissions, total] = await this.permissionRepository.findAndCount({
       where: [
         {

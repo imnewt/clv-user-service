@@ -14,7 +14,7 @@ export class TypeOrmRoleRepository implements IRoleRepository {
   ) {}
 
   async getRoles(filter: FilterDto): Promise<{ roles: Role[]; total: number }> {
-    const { searchTerm, pageNumber, pageSize } = filter;
+    const { searchTerm = '', pageNumber = 1, pageSize = 10 } = filter;
     const [roles, total] = await this.roleRepository.findAndCount({
       where: [
         {

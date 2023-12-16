@@ -14,7 +14,7 @@ export class TypeOrmUserRepository implements IUserRepository {
   ) {}
 
   async getUsers(filter: FilterDto): Promise<{ users: User[]; total: number }> {
-    const { searchTerm, pageNumber, pageSize } = filter;
+    const { searchTerm = '', pageNumber = 1, pageSize = 10 } = filter;
     const [users, total] = await this.userRepository.findAndCount({
       select: [
         'id',
